@@ -1,5 +1,7 @@
 # My Personal Site
-Source Code for [my personal website](https://pranaviyer.com). Built using Django. Most of the code here is for personal web apps that only I use, and so is not visible without logging in. For more information on the functionality I have built so far, see below. 
+Source Code for [my personal website](https://pranaviyer.com). Built using Django. Most of the code here is for personal web apps that only I use, and so is not visible without logging in. You can read more about all of the functionality below, and feel free to browse the source code!
+
+![image](https://user-images.githubusercontent.com/25040701/201567245-3033258c-3f26-48fc-a772-05b140f70f11.png)
 
 ### Grocery Lists
 
