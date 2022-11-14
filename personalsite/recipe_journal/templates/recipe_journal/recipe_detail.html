@@ -1,0 +1,45 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}{{recipe.title|truncatechars:20}}{% endblock %}
+
+{% block sitecontent %}
+<p class='mb-0'>
+    <h1>{{recipe.title}}
+        <a 
+            target="_blank"
+            {% if recipe.url %}
+            href="{{recipe.url}}"
+            {% elif recipe.raw_text %}
+            href="{% url 'recipe_journal:recipe_text' recipe.pk %}"
+            {% else %}
+            href="{% url 'recipe_journal:recipe_photos' recipe.pk %}"
+            {% endif %}
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-arrow-up-right-square"></use>
+            </svg>
+        </a>
+    </h1>
+    <div class="note-grid mb-2">
+        <div class="note-grid-item">
+            <a class="btn btn-success position-absolute top-50 start-50 translate-middle" href="{% url 'recipe_journal:add_entry' recipe.pk %}">
+                + Note
+            </a>
+        </div>
+    {% for entry in entries %}
+        <div class="note-grid-item">
+            <small class="text-muted">{{entry.created|date:"F j, Y"}}</small>
+            <div>{{entry.notes|linebreaks}}</div>
+        </div>
+    {% endfor %}
+    </div>
+
+    <a class='h3' href="{% url 'recipe_journal:index' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+            <use href="{% static 'site_icons.svg' %}#icon-arrow-left-circle"></use>
+        </svg>
+    </a>
+
+</p>
+{% endblock %}}

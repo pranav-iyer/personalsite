@@ -1,0 +1,80 @@
+{% extends 'site_base.html' %}
+{% block title %}Katey's Work Checklist{% endblock %}
+
+{% block sitecontent %}
+<h1>Katey's Work Checklist</h1>
+
+<div class="w-100 banner banner-bad text-center fs-3 mb-1" id="message">
+    You're missing something :(
+</div>
+
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="laptop" />
+    <label class="form-check-label" for="laptop">Laptop</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="laptop-charger" />
+    <label class="form-check-label" for="laptop-charger">Laptop Charger</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="airpods" />
+    <label class="form-check-label" for="airpods">AirPods</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="helmet" />
+    <label class="form-check-label" for="helmet">Bike Helmet</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="strattera" />
+    <label class="form-check-label" for="strattera">Strattera</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="ritalin" />
+    <label class="form-check-label" for="ritalin">Ritalin</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="keys" />
+    <label class="form-check-label" for="keys">Keys</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="phone" />
+    <label class="form-check-label" for="phone">Phone</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="smoothie" />
+    <label class="form-check-label" for="smoothie">Smoothie</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="nametag" />
+    <label class="form-check-label" for="nametag">Name Tag</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="mask" />
+    <label class="form-check-label" for="mask">Mask</label>
+</div>
+<div class="form-check big-check d-flex align-items-center">
+    <input class="form-check-input big-check-input me-2" type="checkbox" id="binder" />
+    <label class="form-check-label" for="binder">Attendance Binder</label>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let checkboxes = Array.from(document.querySelectorAll("input[type=checkbox]"));
+
+    for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].addEventListener("change", (event) => {
+            let msg = document.getElementById("message");
+            if (checkboxes.every(e => e.checked)) {
+                msg.classList.remove("banner-bad");
+                msg.classList.add("banner-good");
+                msg.innerText = "You're all set!"
+            } else {
+                msg.classList.remove("banner-good");
+                msg.classList.add("banner-bad");
+                msg.innerText = "You're missing something :("
+            }
+        })
+    }
+</script>
+{% endblock %}

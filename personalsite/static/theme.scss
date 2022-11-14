@@ -1,0 +1,21 @@
+// Theme color overridesd
+// $primary: #ff7373;
+$primary: #FAA17A;
+// $success: #682D0D;
+$success: #8CD378;
+// $secondary: #0A3C4C;
+$secondary: #C6A3DB;
+$dark: #000000;
+// $dark: #0A3C4C;
+// $danger: #B12525;
+$danger: #F27D83;
+// FFE7C2
+$link-color: #D5693B;
+$code-color: #833a15;
+
+$offcanvas-transition-duration: 0.1s;
+$enable-negative-margins: true;
+
+@import "bootstrap/scss/bootstrap";
+
+$background-color: #eee;

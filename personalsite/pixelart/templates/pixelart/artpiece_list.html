@@ -1,0 +1,58 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}PixelArt{% endblock title %}
+
+{% block sitecontent %}
+<div class="d-flex align-items-center justify-content-between">
+    <h1>PixelArt</h1>
+    <a href="{% url 'pixelart:editor' %}" class="btn btn-dark my-1">Add New</a>
+</div>
+<div class='card-grid'>
+    {% for art_piece, progress in art_pieces %}
+    <div class="mb-2">
+        <div class="card-grid-item">
+            <a href="{% url 'pixelart:draw' art_piece.slug %}">
+                {% if art_piece.thumbnail %}
+                {% if progress == 100 %}
+                <img class="pixel-img" src="{{art_piece.filled_thumbnail.url}}">
+                {% else %}
+                <img class="pixel-img" src="{{art_piece.thumbnail.url}}">
+                {% endif %}
+                {% else %}
+                <img class="pixel-img" src="{% static 'icons/pixart_logo_gray.png' %}">
+                {% endif %}
+            </a>
+            {% if progress == 100 %}
+                {% if art_piece.filled_thumbnail %}
+                <a href="{% url 'pixelart:download' art_piece.slug %}">
+                    <div class="pixart-progress-label pixart-complete-label fs-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                            <use href="{% static 'site_icons.svg' %}#icon-download"></use>
+                        </svg>
+                    </div>
+                </a>
+                {% else %}
+                <div class="pixart-progress-label small">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                        <use href="{% static 'site_icons.svg' %}#icon-check-lg"></use>
+                    </svg>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="pixart-progress-label small">
+                    {% if progress >= 0 %}
+                    {{progress}}%
+                    {% else %}
+                    0%
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-grid-label">
+            {{art_piece.title}}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

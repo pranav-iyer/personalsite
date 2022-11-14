@@ -1,0 +1,23 @@
+{% extends 'yesman/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>YesMan</h1>
+<ul class='list-group'>
+{% for yesitem in yeslist %}
+    <li class='list-group-item d-flex align-items-center'>
+        <a class='btn btn-success me-2' href="{% url 'yesman:complete' yesitem.id %}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-check-lg"></use>
+            </svg>
+        </a>
+        <div class='fw-bold me-auto'>{{ yesitem.info }}</div>
+        <div>{{ yesitem.created|date:"n/j/y" }}</div>
+    </li>
+{% endfor %}
+    <li class='list-group-item d-flex'>
+        <a class='btn btn-primary mx-auto' href="{% url 'yesman:create' %}">Add New</a>
+    </li>
+</ul>
+
+{% endblock %}

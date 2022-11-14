@@ -1,0 +1,12 @@
+{% extends 'site_base.html' %}
+{% block title %}Text - {{recipe.title|truncatechars:20}}{% endblock %}
+
+{% block sitecontent %}
+<p class='mb-0'>
+    <h1>{{recipe.title}}</h1>
+    <div>
+        {{recipe.raw_text|linebreaks}}
+    </div>
+
+</p>
+{% endblock %}}

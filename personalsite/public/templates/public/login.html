@@ -1,0 +1,41 @@
+{% extends 'site_base.html' %}
+{% block title %}Login{% endblock %}
+{% block sitecontent %}
+    <div class='d-flex flex-column align-items-center' style='height: 100%'>
+        <h1 class='display-5'>
+            Enter Credentials
+        </h1>
+        <form class='container-sm px-2' method="post" action="{% url 'public:login' %}" style="max-width: 25rem;">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class='form-label' for='{{ form.username.id_for_label }}'>Username</label>
+                {{ form.username }}
+                {% for error in form.username.errors %}
+                <div class="text-danger form-text">{{error|escape}}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label class='form-label' for='{{ form.password.id_for_label }}'>Password</label>
+                {{ form.password }}
+                {% for error in form.password.errors %}
+                <div class="text-danger form-text">{{error|escape}}</div>
+                {% endfor %}
+            </div>
+
+            {% for error in form.non_field_errors %}
+            <div class="text-danger form-text">{{error|escape}}</div>
+            {% endfor %}
+
+            <input class="btn btn-primary mt-2" type="submit" value="Login">
+            <input type="hidden" name="next" value="{{ next }}">
+            
+        </form>
+
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        document.getElementById("{{ form.username.id_for_label }}").classList.add("form-control");
+        document.getElementById("{{ form.password.id_for_label }}").classList.add("form-control");
+    </script>
+{% endblock %}

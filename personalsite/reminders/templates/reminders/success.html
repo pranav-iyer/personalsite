@@ -1,0 +1,8 @@
+{% extends 'reminders/base.html' %}
+
+{% block title %}RMan - Successfully Created {% endblock %}
+
+{% block content %}
+Reminder successfully created! <br/>
+<a class='btn btn-secondary' href="{% url 'reminders:create' %}">Create another reminder</a>
+{% endblock %}

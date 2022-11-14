@@ -1,0 +1,364 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}All Transactions{% endblock %}
+
+{% block sitecontent %}
+<div class="container-fluid ps-0 pe-1 overflow-auto" style="height: calc(100vh - 94px);">
+    <table class="table table-sm">
+        <thead class="table-primary sticky-top trans-report-header">
+            <tr>
+                {% for column in column_info %}
+                <th data-colname="{{column.0}}">
+                    <button class="d-flex align-items-end thead-button text-reset h-100 w-100">
+                        <div>{{column.1}}</div>
+                        <div class="ms-1" style="margin-bottom: 0.35rem;">
+                            <div class="sort-triangle triangle-up"></div>
+                            <div style="margin-bottom: 0.1rem;"></div>
+                            <div class="sort-triangle triangle-down"></div>
+                        </div>
+                    </button>
+                </th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>
+                    <select id="filter-source" class="form-select form-select-sm">
+                        <option selected value>---</option>
+                        <option value="Katey CapitalOne">Katey CapitalOne</option>
+                        <option value="Katey Discover">Katey Discover</option>
+                        <option value="Pranav Discover">Pranav Discover</option>
+                    </select>
+                </th>
+                <th>
+                    <input id="filter-date-min" type="date" class="form-control form-control-sm" />
+                    <input id="filter-date-max" type="date" class="form-control form-control-sm" />
+                </th>
+                <th>
+                    <input id="filter-description" class="form-control form-control-sm" placeholder="e.g. Dunkin Donuts" />
+                </th>
+                <th style="min-width:10rem;">
+                    <input id="filter-amount-min" class="form-control form-control-sm mx-0 d-inline" style="width: 3.5rem;" />
+                    -
+                    <input id="filter-amount-max" class="form-control form-control-sm mx-0 d-inline" style="width: 3.5rem;"/>
+                </th>
+                <th>
+                    <select id="filter-category" class="form-select form-select-sm">
+                        <option selected value>---</option>
+                        {% for cat in category_choices %}
+                        <option value="{{cat.0}}">{{cat.1}}</option>
+                        {% endfor %}
+                    </select>
+                </th>
+                <th>
+                    <select id="filter-edited-category" class="form-select form-select-sm">
+                        <option selected value>---</option>
+                        {% for cat in edited_category_choices %}
+                        <option value="{{cat.0}}">{{cat.1}}</option>
+                        {% endfor %}
+                    </select>
+                </th>
+            </tr>
+        </thead>
+        <tbody id="report-data">
+        </tbody>
+    </table>
+</div>
+<div class="fixed-bottom budget-footer d-flex">
+    <div class="me-2">
+        Total: <span id="current-sum">-</span>
+    </div>
+    |
+    <div class="mx-2">
+        <span id="current-count">--</span> Transactions
+    </div>
+    |
+    <div class="mx-2">
+        Average: <span id="current-avg">-</span>
+    </div>
+    <div class="ms-auto">
+        <a class="btn btn-sm btn-secondary" href="{% url 'budget:csvdrop' %}">Import CSV</a>
+    </div>
+    <div class="ms-2">
+        <button id="copy-clip" type="button" class="btn btn-sm btn-success" disabled>Copy Table to Clipboard</button>
+    </div>
+    <div class="ms-2">
+        <a class="btn btn-sm btn-outline-dark" href="{% url 'budget:home' %}">&lt; Budget Home</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{report_data_json|json_script:"report_data_json"}}
+{{column_info|json_script:"column_info"}}
+<script src="{% static 'budget/transaction_report.js' %}"></script>
+<script>
+    // misc
+    // table header shadow setup
+    const header = document.querySelector("thead.trans-report-header");
+    const headerObs = new IntersectionObserver(
+        ([e]) => e.target.classList.toggle("is-pinned", e.intersectionRatio < 1),
+        {threshold: [1]}
+    )
+    headerObs.observe(header);
+
+    // globals
+    var report_data = JSON.parse(document.getElementById('report_data_json').textContent);
+    var column_info = JSON.parse(document.getElementById('column_info').textContent);
+    
+    let refreshTable = () => {
+        fillTbody(document.getElementById("report-data"), report_data, column_info);
+        let stats = getStats(report_data);
+        document.getElementById("current-sum").innerText = formatMoney(stats.sum);
+        document.getElementById("current-count").innerText = stats.count;
+        document.getElementById("current-avg").innerText = formatMoney(stats.avg);
+    };
+    let currentSort = null;
+    let currentFilters = {};
+
+    // on load
+    window.onload = () => {
+        refreshTable();
+        // enable copy button
+        if (report_data.length > 0) {
+            document.getElementById("copy-clip").disabled = false;
+        }
+    }
+
+    // util functions
+    function setSort(col, order, dtype) {
+        sortInPlace(report_data, col, dtype, order);
+        currentSort = {
+            order: order,
+            col: col
+        }
+        refreshTable();
+
+        // set the proper triangle active
+        for (let el of document.querySelectorAll(".triangle-active")) {
+            el.classList.remove("triangle-active");
+        }
+        for (let el of document.querySelectorAll(".column-active")) {
+            el.classList.remove("column-active");
+        }
+        let th = document.querySelector(`[data-colname=${col}]`)
+        th.querySelector("button").classList.add("column-active")
+
+        if (currentSort.order === 1) {
+            th.querySelector(".triangle-up").classList.add("triangle-active");
+        } else {
+            th.querySelector(".triangle-down").classList.add("triangle-active");
+        }
+    }
+
+    function refreshTableAndFilters() {
+        /** filters should be an an object (keyed on column) like:
+         * {
+         *      description: {
+         *          fil: "dunkin",
+         *          type: "exact"
+         *      }
+         * }
+         * 
+         */
+
+        filterInPlace(report_data, currentFilters);
+
+        refreshTable();
+    }
+
+    function updateURL() {
+        // update URL
+        let queryStr = []
+        for (let key of Object.keys(currentFilters)) {
+            if (key === "date" || key === "amount") {
+                queryStr.push(encodeURIComponent(key + '_min') + '=' + encodeURIComponent(currentFilters[key].fil[0]));
+                queryStr.push(encodeURIComponent(key + '_max') + '=' + encodeURIComponent(currentFilters[key].fil[1]));
+            } else {
+                queryStr.push(encodeURIComponent(key) + '=' + encodeURIComponent(currentFilters[key].fil));
+            }
+        }
+        let currentURL = window.location.href;
+        let newURL = window.location.origin + window.location.pathname + '?' + queryStr.join('&')
+        if (newURL !== currentURL) {
+            window.history.pushState(null, null, newURL);
+        }
+    }
+
+    function updateDateFilter() {
+        let lowerBound = document.getElementById("filter-date-min").value;
+        let upperBound = document.getElementById("filter-date-max").value;
+
+        if (lowerBound === "") {
+            lowerBound = '0000-00-00';
+        }
+
+        if (upperBound === "") {
+            upperBound = '9999-99-99';
+        }
+
+        if (lowerBound === '0000-00-00' && upperBound === '9999-99-99') {
+            currentFilters['date'] = null;
+        } else {
+            currentFilters["date"] = {fil: [lowerBound, upperBound], type: 'daterange'};
+        }
+
+        refreshTableAndFilters();
+    }
+
+
+
+    function updateAmountFilter() {
+        let lowerBound = document.getElementById("filter-amount-min").value;
+        let upperBound = document.getElementById("filter-amount-max").value;
+
+        if (lowerBound === "" || isNaN(parseFloat(lowerBound))) {
+            lowerBound = -Infinity;
+        } else {
+            lowerBound = parseFloat(lowerBound);
+        }
+
+        if (upperBound === "" || isNaN(parseFloat(upperBound))) {
+            upperBound = Infinity;
+        } else {
+            upperBound = parseFloat(upperBound);
+        }
+
+        if (lowerBound === -Infinity && upperBound === Infinity) {
+            currentFilters['amount'] = null;
+        } else {
+            currentFilters["amount"] = {fil: [lowerBound, upperBound], type: 'range'};
+        }
+
+        refreshTableAndFilters();
+    }
+
+    // event listeners
+    document.getElementById("filter-date-min").addEventListener("change", updateURL)
+    document.getElementById("filter-date-max").addEventListener("change", updateURL)
+    document.getElementById("filter-amount-min").addEventListener("blur", updateURL)
+    document.getElementById("filter-amount-max").addEventListener("blur", updateURL)
+    document.getElementById("filter-source").addEventListener("change", updateURL)
+    document.getElementById("filter-category").addEventListener("change", updateURL)
+    document.getElementById("filter-edited-category").addEventListener("change", updateURL)
+    document.getElementById("filter-description").addEventListener("blur", updateURL)
+
+    document.getElementById("filter-date-min").addEventListener("input", updateDateFilter);
+    document.getElementById("filter-date-max").addEventListener("input", updateDateFilter);
+
+    document.getElementById("filter-amount-min").addEventListener("input", (event) => {
+        event.target.value = event.target.value.replace(/[^\d\.]/g, '');
+        updateAmountFilter();
+    });
+    document.getElementById("filter-amount-max").addEventListener("input", (event) => {
+        event.target.value = event.target.value.replace(/[^\d\.]/g, '');
+        updateAmountFilter();
+    });
+    
+    document.getElementById("filter-source").addEventListener("change", (event) => {
+        let fil = document.getElementById("filter-source").value;
+        if (fil !== '') {
+            currentFilters["source"] = {fil: fil, type: "exact"};
+        } else {
+            currentFilters["source"] = null;
+        }
+        refreshTableAndFilters();
+    })
+    
+    document.getElementById("filter-category").addEventListener("change", (event) => {
+        let fil = document.getElementById("filter-category").value;
+        if (fil !== '') {
+            currentFilters["category"] = {fil: fil, type: "exact"};
+        } else {
+            currentFilters["category"] = null;
+        }
+        refreshTableAndFilters();
+    })
+
+    document.getElementById("filter-edited-category").addEventListener("change", (event) => {
+        let fil = document.getElementById("filter-edited-category").value;
+        if (fil !== '') {
+            currentFilters["edited_category"] = {fil: fil, type: "exact"};
+        } else {
+            currentFilters["edited_category"] = null;
+        }
+        refreshTableAndFilters();
+    })
+
+    document.getElementById("filter-description").addEventListener("input", (event) => {
+        let fil = document.getElementById("filter-description").value.toLowerCase();
+
+        if (fil !== '') {
+            currentFilters["description"] = {fil: fil, type: "match appx"};
+        } else {
+            currentFilters["description"] = null;
+        }
+        refreshTableAndFilters();
+    })
+
+    
+    for (let col_info of column_info) {
+        let button = document.querySelector(`[data-colname=${col_info[0]}]`).children[0];
+        button.addEventListener("click", (event) => {
+            if (
+                currentSort === null ||
+                (currentSort.col !== col_info[0]) ||
+                (currentSort.col === col_info[0] && currentSort.order === -1)
+            ) {
+                setSort(col_info[0], 1, col_info[2]);
+            } else {
+                setSort(col_info[0], -1, col_info[2]);
+            }
+        })
+    }
+
+    document.getElementById("copy-clip").addEventListener("click", async (event) => {
+        let copyString = "";
+        let tBody = document.getElementById("report-data");
+        for (let row of tBody.children) {
+            let rowString = "";
+            for (let cell of row.children) {
+                rowString += cell.innerText + '\t';
+            }
+            copyString += rowString.slice(0, -1) + '\n';
+        }
+        await navigator.clipboard.writeText(copyString.slice(0, -1));
+    })
+
+
+    // parse query params
+    let queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.get("date_min") !== null) {
+        document.getElementById("filter-date-min").value = queryParams.get("date_min");
+        document.getElementById("filter-date-min").dispatchEvent(new Event("input"));
+    }
+    if (queryParams.get("date_max") !== null) {
+        document.getElementById("filter-date-max").value = queryParams.get("date_max");
+        document.getElementById("filter-date-max").dispatchEvent(new Event("input"));
+    }
+    if (queryParams.get("amount_min") !== null) {
+        document.getElementById("filter-amount-min").value = queryParams.get("amount_min");
+        document.getElementById("filter-amount-min").dispatchEvent(new Event("input"));
+    }
+    if (queryParams.get("amount_max") !== null) {
+        document.getElementById("filter-amount-max").value = queryParams.get("amount_max");
+        document.getElementById("filter-amount-max").dispatchEvent(new Event("input"));
+    }
+    if (queryParams.get("description") !== null) {
+        document.getElementById("filter-description").value = queryParams.get("description");
+        document.getElementById("filter-description").dispatchEvent(new Event("input"));
+    }
+    if (queryParams.get("source") !== null) {
+        document.getElementById("filter-source").value = queryParams.get("source");
+        document.getElementById("filter-source").dispatchEvent(new Event("change"));
+    }
+    if (queryParams.get("category") !== null) {
+        document.getElementById("filter-category").value = queryParams.get("category");
+        document.getElementById("filter-category").dispatchEvent(new Event("change"));
+    }
+    if (queryParams.get("edited_category") !== null) {
+        document.getElementById("filter-edited-category").value = queryParams.get("edited_category");
+        document.getElementById("filter-edited-category").dispatchEvent(new Event("change"));
+    }
+</script>
+{% endblock scripts %}

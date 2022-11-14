@@ -1,0 +1,166 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}PixelArt Editor{% endblock title %}
+
+{% block headscripts %}
+<script src="{% static 'jszip/jszip.min.js' %}"></script>
+<script src="{% static 'filesaver-js/FileSaver.min.js' %}"></script>
+{% endblock headscripts %}
+
+{% block sitecontent %}
+{% csrf_token %}
+<input type="file" class="form-control form-control-sm" accept="image/png, image/jpeg, image/webp" id="photo-input" />
+
+<!--Toast-->
+<div class="position-fixed top-50 start-50 translate-middle p-3" style="z-index: 1100;">
+    <div class="toast hide align-items-center" id="success-toast" style="--bs-toast-bg: rgba(255, 255, 255, 1);" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body d-flex align-items-center">
+            <div class="me-2 bg-success rounded-circle fs-3" style="padding: 0 0.356rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                    <use href="{% static 'site_icons.svg' %}#icon-check-lg"></use>
+                </svg>
+            </div>
+            <div>
+                {% if user_is_staff %}
+                PixelArt '<span id="save-success-pixart-name">Orange Rose</span>' has been saved to your library.
+                {% else %}
+                Your request to add PixelArt '<span id="save-success-pixart-name">Orange Rose</span>' has been submitted.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="view-container">
+    <div
+    class="two-photo-display abs-fill"
+    id="two-photo-display"
+    style="--split-point: 400px"
+    >
+        <div class="abs-fill movable-window">
+            <canvas id="left-canvas"></canvas>
+        </div>
+        <div class="abs-fill movable-window">
+            <canvas id="right-canvas"></canvas>
+        </div>
+        <div class="two-photo-handle" id="two-photo-handle">Scrub</div>
+
+    </div>
+
+    <div id="control-panel" class="d-flex">
+        <div id="controls" class="collapse show">
+            <div>
+                <strong id="orig-width">---</strong> x <strong id="orig-height">---</strong> px
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                    <use href="{% static 'site_icons.svg' %}#icon-arrow-right"></use>
+                </svg>
+                <strong id="new-width">---</strong> x <strong id="new-height">---</strong> px
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="scale-factor">Scale Factor</label>
+                    <input class="form-control form-control-sm" id="scale-factor" value="0.2" />
+                </div>
+                <div class="col-6">
+                    <label for="num-colors">Number of Colors</label>
+                    <input class="form-control form-control-sm mb-2" id="num-colors" value="10" />
+                </div>
+            </div>
+            <button class="btn btn-secondary p-1" type="button" id="controls-update-button">Update</button>
+            <div class="dropup btn-group">
+                <button class="btn btn-secondary dropdown-toggle p-1" type="button" id="downloadOptionMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                Download
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="downloadOptionMenu">
+                    <li>
+                        <button class="dropdown-item" type="button" id="pixart-download-button">
+                            Download as .pixart
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item" type="button" id="png-download-button">
+                            Download as .png
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item" type="button" id="grayscale-download-button">
+                            Download as grayscale .png
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item" type="button" id="zip-download-button">
+                            Download as .zip
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <button type="button" class="btn btn-secondary p-1" data-bs-toggle="modal" data-bs-target="#namingModal" id="save-library-trigger-button" disabled>
+                {% if user_is_staff %}
+                Save to Library
+                {% else %}
+                Add to Library
+                {% endif %}
+            </button>
+            <div>
+                <small>Progress:</small>
+                <div class="process-progress" style="height: 14px;">
+                    <div class="process-progress-bar bg-success" id="process-progress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <span class="m-0 fs-3 inv-collapse">Controls</span>
+        <button class="btn btn-outline-dark ms-2" id="controls-collapse-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#controls" aria-expanded="false" aria-controls="controls">
+            <span id="collapse-icon-plus" style="display: none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                    <use href="{% static 'site_icons.svg' %}#icon-plus-lg"></use>
+                </svg>
+            </span>
+            <span id="collapse-icon-minus">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                    <use href="{% static 'site_icons.svg' %}#icon-dash-lg"></use>
+                </svg>
+            </span>
+        </button>
+    </div>
+        
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="namingModal" tabindex="-1" aria-labelledby="namingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="namingModalLabel">Name This PixelArt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="pixart-title">Title</label>
+                <input id="pixart-title" class="form-control" />
+
+                <label for="pixart-slug">Slug</label>
+                <input id="pixart-slug" class="form-control" />
+
+                <small class="text-danger" id="error-text"></small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="save-library-button">
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    <span class="visually-hidden">Loading...</span>
+
+                    {% if user_is_staff %}
+                    Save to Library
+                    {% else %}
+                    Request to Add to Library
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'pixelart/editor/pixelart_editor.js' %}" type="module"></script>
+{% endblock scripts %}

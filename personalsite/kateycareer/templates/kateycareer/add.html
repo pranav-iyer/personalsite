@@ -1,0 +1,17 @@
+{% extends 'site_base.html' %}
+{% block sitecontent %}
+<p class='mb-0'>
+    What's your dream today?
+</p>
+<form class='mb-2' action="" method="post" style='max-width: 300px;'>
+    {% csrf_token %}
+    {{ form.job_title }}
+    <input class='btn btn-primary' type='submit' value='Dream!'>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById("{{form.job_title.id_for_label}}").classList.add('form-control', 'mb-2')
+</script>
+{% endblock %}

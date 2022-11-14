@@ -1,0 +1,160 @@
+$background-color: #eee;
+$primary: #FAA17A;
+$success: #8CD378;
+
+.weekday-container {
+    width: 100%;
+    position: relative;
+}
+
+.date-label {
+    user-select: none;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.date-label-active {
+    background-color: $success;
+}
+
+.hour-container {
+    height: 48px;
+}
+
+.hour-label-container {
+    height: 48px;
+    text-align: right;
+}
+
+.hour-label-container-right {
+    height: 48px;
+    text-align: left;
+}
+
+.hour-label {
+    padding-right: 0.25rem;
+    position: relative;
+    top: -0.75rem;
+    white-space: nowrap;
+}
+
+.hour-label-right {
+    padding-left: 0.25rem;
+    position: relative;
+    top: -0.75rem;
+    white-space: nowrap;
+}
+
+.side-gutter {
+    width: 20rem;
+}
+
+.side-gutter-right {
+    width: 20rem;
+    @media (max-width: 576px) {
+        display: none;
+    }
+}
+
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 55px - 32px);
+}
+
+.week-title {
+    @media (max-width: 576px) {
+        font-size: 1.125em;
+    }
+}
+
+.week-grid {
+    flex: 1;
+    max-width: 1400px;
+}
+
+.week-grid-headers {
+    max-width: 1400px;
+}
+
+.date-range-event-row {
+    height: 24px;
+    max-width: 1400px;
+}
+
+.date-range-event {
+    position: absolute;
+    font-size: 0.75em;
+    cursor: pointer;
+    border-radius: 0.375rem;
+}
+
+.bottom-shadow {
+    box-shadow: 0px 6px 3px -2px gray;
+    z-index: 1020;
+}
+
+.week-event {
+    position: absolute;
+    font-size: 0.75em;
+    line-height: 1.25;
+    width: 90%;
+    cursor: pointer;
+}
+
+.week-event-ghost {
+    position: absolute;
+    font-size: 0.75em;
+    line-height: 1.25;
+    width: 90%;
+    background-color: scale-color($primary, $lightness: +45%);
+}
+
+
+.triangle-left {
+    width: 0;
+    height: 0;
+    border: 11px solid transparent;
+    border-right: 11px solid $primary;
+    margin-left: -12px;
+}
+
+.triangle-right {
+    width: 0;
+    height: 0;
+    border: 11px solid transparent;
+    border-left: 11px solid $primary;
+    margin-right: -11px;
+}
+
+.weekday-widget {
+    display: flex;
+    justify-content: space-around;
+}
+
+.weekday-widget-button {
+    border-radius: 50%;
+    background-color: white;
+    width: 2.5em;
+    height: 2.5em;
+    display: block;
+    text-align: center;
+    border: 1.5px solid black;
+}
+
+.now-marker {
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background-color: $success;
+}
+
+.now-marker-circle {
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    margin-left: -4px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background-color: $success;
+}

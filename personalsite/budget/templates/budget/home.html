@@ -1,0 +1,98 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}Budget{% endblock %}
+
+{% block sitecontent %}
+<div class="d-flex justify-content-center mb-2">
+  <div class="col-sm-2 d-none d-sm-flex align-items-center justify-content-end" style="visibility: hidden;">
+    <div>
+    <a class="btn btn-primary btn-sm">Import from CSV</a>
+    </div>
+  </div>
+  <div class="col-sm-8 d-flex align-items-center justify-content-center">
+    <a class="btn btn-outline-dark mx-2" href="{% url 'budget:home' %}?month={{prev_month}}&year={{prev_year}}">&lt;&lt;</a>
+    <h1 class="mb-0">
+      <a class="link-dark" href="{% url 'budget:trans_report' %}?date_min={{year_name}}-{{month}}-01&date_max={{year_name}}-{{month}}-{{last_day_of_month}}">{{month_name}} {{year_name}}</a>
+    </h1>
+    <a class="btn btn-outline-dark mx-2" href="{% url 'budget:home' %}?month={{next_month}}&year={{next_year}}">&gt;&gt;</a>
+  </div>
+  <div class="col-sm-2 d-none d-sm-flex align-items-center justify-content-end">
+    <div>
+    <a class="btn btn-primary btn-sm" href="{% url 'budget:csvdrop' %}">Import from CSV</a>
+    </div>
+  </div>
+</div>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2 text-center justify-content-center">
+  {% for row in monthly_limits %}
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="{% url 'budget:trans_report' %}?date_min={{year_name}}-{{month}}-01&date_max={{year_name}}-{{month}}-{{last_day_of_month}}&edited_category={{row.edited_category}}" class="link-dark">{{row.edited_category_label}}</a>
+        </h5>
+        {% if not row.over_budget %}
+        <h6 class="card-subtitle mb-2 text-muted"><span class="text-dark fw-bold">${{row.remaining}} left</span> (${{row.monthly_limit}})</h6>
+        {% else %}
+        <h6 class="card-subtitle mb-2 text-muted"><span class="text-danger fw-bold">${{row.remaining}} over</span> (${{row.monthly_limit}})</h6>
+        {% endif %}
+        <div class="card-text">
+          <div class="progress mb-1">
+            <div class="progress-bar bg-secondary" style="width:{{row.progress}}%"></div>
+          </div>
+          {% if row.overshoot > 0 %}
+          <div class="progress mb-1" style="width:{{row.overshoot}}%">
+            <div class="progress-bar bg-danger" style="width:100%"></div>
+          </div>
+          {% endif %}
+          {% if row.overshoot2 > 0 %}
+          <div class="progress" style="width:{{row.overshoot2}}%">
+            <div class="progress-bar bg-danger fw-bolder" style="width:100%">
+              {% if row.overshoot2 == 100 %}++{% endif %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{transactions|json_script:"transactions_json"}}
+{{edited_categories|json_script:"edited_categories"}}
+{{monthly_limits|json_script:"monthly_limits"}}
+<script>
+  const transactions = JSON.parse(document.getElementById("transactions_json").textContent);
+  const edited_categories = JSON.parse(document.getElementById("edited_categories").textContent);
+  const monthly_limits = JSON.parse(document.getElementById("monthly_limits").textContent);
+
+  let currMonth = (new Date()).getMonth();
+  let currYear = `${(new Date()).getFullYear()}`;
+  if (currMonth < 10) {
+    currMonth = `0${currMonth}`;
+  } else {
+    currMonth = `${currMonth}`;
+  }
+  let nextMonth = currMonth === '12' ? '01' : `${parseInt(currMonth) + 1}`;
+  let nextYear = currMonth === '12' ? `${parseInt(currYear) + 1}` : currYear
+
+  let thisMonth = transactions.filter(row => {
+    return row.date >= `${currYear}-${currMonth}-01` && row.date < `${nextYear}-${nextMonth}-01`;
+  })
+  let thisMonthSums = {}
+  let thisMonthRems = {}
+  for (let cat of edited_categories) {
+    thisMonthSums[cat[1]] = 0;
+  }
+  for (let row of thisMonth) {
+    thisMonthSums[row.edited_category_label] += parseFloat(row.amount); 
+  }
+  for (let cat of edited_categories) {
+    thisMonthRems[cat[1]] = parseFloat(monthly_limits[cat[0]]) - thisMonthSums[cat[1]]
+  }
+</script>
+{% endblock %}

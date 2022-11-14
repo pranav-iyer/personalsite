@@ -1,0 +1,105 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}Validate CSV{% endblock %}
+
+{% block sitecontent %}
+<table class="table table-sm">
+  <thead class="table-dark sticky-top">
+    <tr>
+      <th>Source</th>
+      <th>Date</th>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Edited Category</th>
+      <th>+/&ndash;</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in results %}
+    <tr id="table-row-{{row.index}}" class="table-danger">
+      <td>{{row.source}}</td>
+      <td>{{row.date|date:"m/d/Y"}}</td>
+      <td>
+        {{row.description}}
+        {% if row.dup_desc %}
+        <br/>
+        <span class="small text-danger">
+          <b>Duplicate:</b> {{row.date|date:"m/d/Y"}} | <i>{{row.dup_desc}}</i> | ${{row.amount}}
+        </span>
+        {% endif %}
+      </td>
+      <td>${{row.amount|floatformat:2}}</td>
+      <td>{{row.category}}</td>
+      <td>
+        <select name="category" class="form-select form-select-sm mb-2" id="edited-category-{{row.index}}">
+          {% for cho in category_choices %}
+          <option selected disabled hidden value></option>
+          <option value={{cho.0}}>{{cho.1}}</option>
+          {% endfor %}
+        </select>
+      </td>
+      <td>
+        <button id="toggle-row-{{row.index}}" class="btn btn-sm btn-success">&ndash;</button>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<form id="csvdrop-save-form" action="{% url 'budget:csvdrop_save' %}" method="POST">
+  {% csrf_token %}
+  <textarea id="id_transactions" name="transactions" hidden></textarea>
+  <button type="submit" class="btn btn-primary">Import Transactions</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+{{results|json_script:"csv_results"}}
+<script>
+  let data = JSON.parse(document.getElementById('csv_results').textContent);
+
+  function refreshRow(idx) {
+    let btn = document.getElementById(`toggle-row-${idx}`);
+    let row = document.getElementById(`table-row-${idx}`);
+    if (!data[idx].accepted) {
+      btn.innerText = "+";
+      btn.classList.remove("btn-danger");
+      btn.classList.add("btn-success");
+
+      row.classList.remove("table-success");
+      row.classList.add("table-danger");
+    } else {
+      btn.innerText = "–";
+      btn.classList.remove("btn-success");
+      btn.classList.add("btn-danger");
+
+      row.classList.remove("table-danger");
+      row.classList.add("table-success");
+    }
+  }
+
+  for (let row of data) {
+    document.getElementById(`edited-category-${row.index}`).value = row["edited_category"];
+    refreshRow(row.index);
+
+    document.getElementById(`toggle-row-${row.index}`).addEventListener("click", (event) => {
+      let idx = parseInt(event.target.closest('button').id.slice(11));
+      data[idx].accepted = !data[idx].accepted;
+      refreshRow(idx);
+    })
+
+    document.getElementById(`edited-category-${row.index}`).addEventListener("change", (event) => {
+      let idx = parseInt(event.target.closest('select').id.slice(16));
+      data[idx].edited_category = event.target.closest('select').value;
+    })
+  }
+
+  document.getElementById("csvdrop-save-form").addEventListener("submit", () => {
+    document.getElementById("id_transactions").value = JSON.stringify(data);
+  })
+  
+</script>
+{% endblock %}

@@ -1,0 +1,650 @@
+// .site-content-container {
+//     background: rgb(255,255,255);
+//     background: linear-gradient(90deg, rgba(255,255,0,1) 0%, rgba(255,192,99,1) 32%, rgba(255,115,115,1) 100%);
+//     /* gradient color hexes: #ffffff, #ffc063, #ff7373, #086788 */
+// }
+@import "../theme";
+
+body {
+  background-color: $background-color;
+  color: $dark;
+}
+
+.nav-link {
+  @media (max-width: map-get($grid-breakpoints, sm)) {
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem !important;
+    border-top: 1px solid $gray-500;
+  }
+}
+
+.big-margins {
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 5px;
+}
+
+.left-decoration-container,
+.right-decoration-container {
+  position: relative;
+}
+
+.left-decoration {
+  height: 90vh;
+  width: 150px;
+  position: absolute;
+  overflow: visible;
+  z-index: 10;
+  @media (max-width: map-get($grid-breakpoints, md)) {
+    visibility: hidden;
+  }
+}
+
+.left-decoration-inner {
+  height: 90vh;
+  width: 150px;
+  position: absolute;
+  left: 150px;
+  overflow: visible;
+  z-index: 9;
+  @media (max-width: 1100px) {
+    visibility: hidden;
+  }
+}
+
+.right-decoration {
+  height: 90vh;
+  width: 150px;
+  position: absolute;
+  right: 0px;
+  overflow: visible;
+  z-index: 10;
+  @media (max-width: map-get($grid-breakpoints, md)) {
+    visibility: hidden;
+  }
+}
+
+.right-decoration-inner {
+  height: 90vh;
+  width: 150px;
+  position: absolute;
+  right: 150px;
+  overflow: visible;
+  z-index: 10;
+  @media (max-width: 1100px) {
+    visibility: hidden;
+  }
+}
+
+.subtitle-font {
+  @extend .fs-4;
+  @media (max-width: map-get($grid-breakpoints, sm)) {
+    font-family: sans-serif;
+    font-size: $h6-font-size !important;
+  }
+}
+
+.site-container {
+  background-color: $background-color;
+  min-height: 100vh;
+}
+
+// a {
+//     color: #ff7373;
+// }
+
+p {
+  text-align: justify;
+  word-wrap: break-word;
+}
+
+.popout-button {
+  width: 60px;
+  height: 60px;
+  border: 1px solid $dark;
+  border-radius: 5px;
+  box-shadow: 3px 3px $dark;
+  padding: 3px;
+  margin: 4px;
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+
+  &:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px $dark;
+  }
+}
+
+.dash-blocks-container {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "search search"
+    "freq mans"
+    "freq mans"
+    "tasks gman";
+  grid-gap: 20px;
+  max-width: map-get($grid-breakpoints, lg);
+
+  @media (max-width: map-get($grid-breakpoints, md)) {
+    grid-template-areas:
+      "header"
+      "search"
+      "mans"
+      "tasks"
+      "gman"
+      "freq";
+    grid-gap: 0px;
+  }
+}
+
+#dash-block-hello {
+  grid-area: header;
+}
+
+#dash-block-freqvis {
+  grid-area: freq;
+}
+
+#dash-block-managers {
+  grid-area: mans;
+}
+
+#dash-block-search {
+  grid-area: search;
+}
+
+#dash-block-tasks {
+  grid-area: tasks;
+}
+
+#dash-block-gman {
+  grid-area: gman;
+}
+
+.todo-item {
+  background-color: $background-color;
+  border-color: $dark;
+  box-shadow: 3px 3px black;
+}
+
+// grid utilities (for pixel art thumbnails)
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-gap: 0.5rem;
+
+  div {
+    text-align: center;
+  }
+}
+
+.card-grid-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: white;
+  border-radius: 20px;
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    border-radius: 20px;
+  }
+
+  .pixart-progress-label {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background-color: $light;
+    color: $dark;
+    border: 1px solid $dark;
+    height: 45px;
+    width: 45px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .pixart-complete-label:hover {
+    background-color: $dark;
+    color: $light;
+    border: 1px solid $light;
+    transition: 0.2s;
+  }
+}
+
+.card-grid-label {
+  text-decoration: none;
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 0.5rem;
+}
+
+.note-grid-item {
+  position: relative;
+  width: 100%;
+  min-height: 150px;
+  padding: 15px;
+  background-color: white;
+  border-radius: 20px;
+}
+
+.blog-card {
+  background-color: $background-color;
+  border: 0.5px solid #0e5167;
+  box-shadow: #0e5167 2px 2px;
+  border-radius: 10px;
+  margin-bottom: $spacer * 0.5;
+}
+
+.blog-post-container {
+  > div {
+    margin-bottom: 1rem;
+  }
+  .blog-image {
+    width: 100%;
+    // border-top: 1px solid $gray-500;
+    // border-bottom: 1px solid $gray-500;
+    padding: 10px 5px 10px 5px;
+    margin-bottom: 0.5rem;
+    color: var(--bs-gray);
+    text-align: center;
+    img {
+      max-width: 100%;
+      max-height: 25rem;
+      box-shadow: 0px 0px 5px; 
+      border-radius: 5px;
+    }
+    .blog-image-desc {
+      margin: 5px 20px 0px 20px;
+    }
+  }
+  ul {
+    line-height: 120%;
+  }
+  pre.code-fragment {
+    border: 1px solid $dark;
+    border-radius: 10px;
+  }
+  code.inline-code {
+    color: $code-color;
+  }
+}
+
+.post-edit-editor,
+.post-edit-preview {
+  max-width: 450px;
+}
+
+.tight-hr {
+  margin: 0.25rem 0;
+}
+
+.post-edit-preview,
+.preview-refresh {
+  @media (max-width: map-get($grid-breakpoints, lg)) {
+    display: none;
+  }
+}
+
+.post-edit-separator {
+  display: inline-block;
+  align-self: stretch;
+  width: 1px;
+  min-height: 1em;
+  background-color: $dark;
+  @media (max-width: map-get($grid-breakpoints, lg)) {
+    display: none;
+  }
+}
+// growing functionality for blog post editor (from https://codepen.io/chriscoyier/pen/XWKEVLy)
+.grow-wrap {
+  /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */
+  display: grid;
+}
+.grow-wrap::after {
+  /* Note the weird space! Needed to preventy jumpy behavior */
+  content: attr(data-replicated-value) " ";
+
+  /* This is how textarea text behaves */
+  white-space: pre-wrap;
+
+  /* Hidden from view, clicks, and screen readers */
+  visibility: hidden;
+}
+.grow-wrap > textarea {
+  /* You could leave this, but after a user resizes, then it ruins the auto sizing */
+  resize: none;
+
+  /* Firefox shows scrollbar on growth, you can hide like this. */
+  overflow: hidden;
+}
+.grow-wrap > textarea,
+.grow-wrap::after {
+  /* Identical styling required!! */
+  max-width: 450px;
+  padding: 0.5rem;
+  font: inherit;
+
+  /* Place on top of each other */
+  grid-area: 1 / 1 / 2 / 2;
+  word-break: break-word;
+}
+
+.draft-date-link,
+.post-date {
+  white-space: nowrap;
+}
+
+.post-date {
+  min-width: 90px;
+}
+
+.post-title-link {
+  color: $dark;
+  text-decoration: none;
+  &:hover,
+  &:focus {
+    color: $dark;
+    text-decoration: underline;
+  }
+}
+
+.blog-image-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-gap: 0.5rem;
+  button.image-button {
+    border: none;
+    background-color: $background-color;
+    position: relative;
+    padding: 0;
+    img {
+      width: 100%;
+      min-height: 50px;
+      padding: 5px;
+      background-color: white;
+      border-radius: 20px;
+    }
+    .image-button-overlay {
+      padding: 5px;
+      background-color: white;
+      border-radius: 20px;
+
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+
+      transition: opacity 0.2s ease-out;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+  a {
+    display: block;
+  }
+}
+
+#gman-main-content {
+  max-width: 50rem;
+}
+
+.svg-icon {
+  height: 1em;
+  vertical-align: -0.125em;
+  width: 1em;
+}
+
+.mid-dot {
+  margin: 0 0.33em;
+}
+
+.big-check {
+  height: 2.5rem;
+}
+
+.big-check-input {
+  height: 2rem;
+  width: 2rem;
+}
+
+.banner {
+  padding: 1rem 0.5rem;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  transition: background 0.2s linear;
+}
+
+.banner-bad {
+  background-color: lightpink;
+  color: darkred;
+  border-color: darkred;
+}
+
+.banner-good {
+  background-color: lightgreen;
+  color: darkgreen;
+  border-color: darkgreen;
+}
+
+// pixel art editor stuff
+.abs-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  contain: strict;
+}
+
+.two-photo-handle {
+  touch-action: none;
+  position: relative;
+  width: 30px;
+  transform: translateX(var(--split-point)) translateX(-50%);
+  will-change: transform;
+  cursor: ew-resize;
+}
+
+.two-photo-handle::before {
+  content: "";
+  display: block;
+  height: 100vh;
+  width: 9px;
+  margin: 0 auto;
+  background: black;
+}
+
+.two-photo-display > :first-child {
+  -webkit-clip-path: inset(0 calc(100% - var(--split-point)) 0 0);
+  clip-path: inset(0 calc(100% - var(--split-point)) 0 0);
+}
+
+.two-photo-display > :nth-child(2) {
+  -webkit-clip-path: inset(0 0 0 var(--split-point));
+  clip-path: inset(0 0 0 var(--split-point));
+}
+
+.two-photo-image {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  max-height: 100%;
+  max-width: 100%;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.photo-input {
+  z-index: 100;
+}
+
+#view-container {
+  height: calc(100vh - 118px);
+  position: relative;
+}
+
+#left-canvas {
+  transform: translate(var(--x), var(--y)) scale(var(--scale));
+  transform-origin: 0 0;
+  touch-action: none;
+}
+
+#right-canvas {
+  transform: translate(var(--x), var(--y))
+    scale(calc(var(--scale) * var(--right-scale)));
+  transform-origin: 0 0;
+  touch-action: none;
+}
+
+#right-canvas {
+  image-rendering: pixelated;
+}
+
+#control-panel {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 1px solid $dark;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: $light;
+  pointer-events: none;
+}
+
+#control-panel input,
+#control-panel label,
+#control-panel button {
+  pointer-events: auto;
+}
+
+
+.pixel-img {
+    image-rendering: pixelated;
+}
+
+.process-progress {
+    display: flex;
+    overflow: hidden;
+    background-color: #e9ecef;
+    border-radius: 0.375rem;
+}
+
+.process-progress-bar {
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    color: $success;
+    text-align: center;
+    white-space: nowrap;
+    transition: width 0.1s ease-in-out;
+}
+
+.collapsing + .inv-collapse {
+  display: none;
+}
+.collapse.show + .inv-collapse {
+  display: none;
+}
+.collapse.hide + .inv-collapse {
+  display: block;
+}
+
+.sort-triangle {
+  color: white;
+  width: 0px;
+  height: 0px;
+  border: 0.35rem solid black;
+}
+
+.triangle-down {
+  border-top-color: $gray-700;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  margin-bottom: -0.35rem;
+
+  &.triangle-active {
+    border-top-color: $light;
+  }
+}
+
+.triangle-up {
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: $gray-700;
+  border-left-color: transparent;
+  margin-top: -0.35rem;
+  &.triangle-active {
+    border-bottom-color: $light;
+  }
+}
+
+.thead-button {
+  background-color: transparent;
+  border-style: none;
+  font-weight: normal;
+  padding: 0;
+  margin: 0;
+  &.column-active {
+    font-weight: bold;
+  }
+}
+
+.budget-footer {
+  box-shadow: 0px -6px 3px -3px black;
+  background-color: #feece4;
+  color: $dark;
+  padding: 0.25rem 0.5rem;
+  margin: 0 0.5rem;
+}
+
+thead.trans-report-header > * > * {
+  border-top: none;
+  border-bottom: none;
+}
+
+thead.trans-report-header > tr:first-of-type > th:first-of-type {
+  border-top-left-radius: 0.5rem;
+}
+
+thead.trans-report-header > tr:first-of-type > th:last-of-type {
+  border-top-right-radius: 0.5rem;
+}
+
+thead.trans-report-header {
+  top: -1px;
+
+  &.is-pinned {
+    box-shadow: 0px 6px 3px -3px black;
+    border-top-left-radius: 5rem;
+    border-top-right-radius: 5rem;
+  }
+}
+
+.unicode-ref-button {
+  width: 5rem;
+  height: 5rem;
+  font-size: 2rem;
+}

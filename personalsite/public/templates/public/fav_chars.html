@@ -1,0 +1,49 @@
+{% extends 'site_base.html' %}
+
+{% block title %}Favorite Characters{% endblock %}
+
+{% block sitecontent %}
+<div class="d-flex justify-content-between">
+  {% include 'left_decor.html' %}
+  <div class="big-margins">
+    <h1>Favorite Characters</h1>
+    <p>Click the buttons below to copy the character to your clipboard:</p>
+    <div class="d-flex flex-wrap">
+      {% for favchar in favchars %}
+      <div class="m-1">
+        <button class="btn btn-primary unicode-ref-button" data-orig-content="{{favchar.char}}" id="char-{{favchar.ord}}" data-bs-toggle="tooltip" title="{{favchar.name}} (U+{{favchar.hex}})">
+          {{favchar.char}}
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% include 'right_decor.html' %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  let tooltipList = tooltipTriggerList.map((el) => {
+    return new bootstrap.Tooltip(el);
+  });
+
+  for (let el of document.querySelectorAll('.unicode-ref-button')) {
+    el.addEventListener("click", (event) => {
+      let charCode = parseInt(el.id.replace("char-", ""));
+      navigator.clipboard.writeText(String.fromCharCode(charCode));
+      let btn = event.target.closest("button");
+      btn.textContent = "Copied!";
+      btn.classList.replace("btn-primary", "btn-success");
+      console.log(btn.dataset.origContent)
+      btn.style["font-size"] = "1rem";
+      setTimeout(() => {
+        btn.textContent = btn.dataset.origContent;
+        btn.classList.replace("btn-success", "btn-primary");
+        btn.style["font-size"] = "";
+      }, 5000)
+    })
+  }
+</script>
+{% endblock %}

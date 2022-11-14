@@ -1,0 +1,76 @@
+{% extends 'site_base.html' %}
+{% block title %}Request Account{% endblock %}
+{% block sitecontent %}
+    <div class='d-flex flex-column align-items-center' style='height: 100%'>
+        <h1 class='display-5'>
+            Request an Account
+        </h1>
+        <p class="px-2" style="max-width: 40rem;">
+            Fill out the form below to create your account on pranaviyer.com&mdash;you
+            will get an email once the site administrator (me) approves the request and
+            activates your account. Having an account allows you to access all currently
+            available PixelArts, and enables progress saving.
+        </p>
+        <form class='container-sm px-2' method="post" action="" style="max-width: 40rem;">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6">
+                    <label class='form-label' for='{{ name_form.first_name.id_for_label }}'>First Name</label>
+                    {{ name_form.first_name }}
+                    {% for error in name_form.first_name.errors %}
+                    <div class="text-danger form-text">{{error|escape}}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-6">
+                    <label class='form-label' for='{{ name_form.last_name.id_for_label }}'>Last Name</label>
+                    {{ name_form.last_name }}
+                    {% for error in name_form.last_name.errors %}
+                    <div class="text-danger form-text">{{error|escape}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class='form-label' for='{{ name_form.email.id_for_label }}'>Email Address</label>
+                {{ name_form.email }}
+                {% for error in name_form.email.errors %}
+                <div class="text-danger form-text">{{error|escape}}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label class='form-label' for='{{ form.username.id_for_label }}'>Username</label>
+                {{ form.username }}
+                {% for error in form.username.errors %}
+                <div class="text-danger form-text">{{error|escape}}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label class='form-label' for="{{ form.password1.id_for_label }}">Password</label>
+                {{ form.password1 }}
+                {% for error in form.password1.errors %}
+                <div class="text-danger form-text">{{error|escape}}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <label class='form-label' for="{{ form.password2.id_for_label }}">Password (repeat)</label>
+                {{ form.password2 }}
+                {% for error in form.password2.errors %}
+                <div class="text-danger form-text">{{error|escape}}</div>
+                {% endfor %}
+            </div>
+
+        
+
+            <input class="btn btn-primary mt-2" type="submit" value="Login">
+            <input type="hidden" name="next" value="{{ next }}">
+            
+        </form>
+
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        document.getElementById("{{ form.username.id_for_label }}").classList.add("form-control");
+        document.getElementById("{{ form.password1.id_for_label }}").classList.add("form-control");
+        document.getElementById("{{ form.password2.id_for_label }}").classList.add("form-control");
+    </script>
+{% endblock %}

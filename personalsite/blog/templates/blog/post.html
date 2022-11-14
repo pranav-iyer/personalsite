@@ -1,0 +1,34 @@
+{% extends 'site_base.html' %}
+{% block title %}{{post.title}}{% endblock %}
+
+{% block sitecontent %}
+<div class="d-flex justify-content-between">
+  {% include 'left_decor.html' %}
+  <div class="big-margins">
+    <h1 class="mb-0">{{post.title}}</h1>
+    <div class="small text-muted mb-3">
+      {{post.published}}
+      {% if request.user.is_staff %}
+      <strong class="mid-dot">&middot;</strong> <a href="{% url 'blog:edit' post.id %}">Edit</a>
+      <strong class="mid-dot">&middot;</strong> <a href="{% url 'blog:unpublish' post.id %}">Unpublish</a>
+      {% endif %}
+    </div>
+    <div class="container-fluid blog-post-container px-0">
+      {{html_text|safe}}
+    </div>
+    <hr class="tight-hr">
+    <hr class="tight-hr">
+    <hr class="tight-hr">
+  </div>
+  {% include 'right_decor.html' %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>hljs.highlightAll();</script>
+<script>
+  document.querySelectorAll(".blog-post-container a").forEach((aNode) => {
+    aNode.target = "_blank";
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block sitecontent %}
+Upload the CSV file from Discover below:
+<form action="" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+    {{form.csv_file}}
+    {{form.csv_file.errors}}
+    {{form.source}}
+    {{form.source.errors}}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

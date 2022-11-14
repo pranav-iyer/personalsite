@@ -1,0 +1,110 @@
+{% extends 'groceries/base.html' %}
+{% load date_fmt %}
+{% load static %}
+
+{% block title %}GMan - {% if viewing == "active" %}Home{% else %}List Archive{% endif %}{% endblock title %}
+
+{% block leftnav %}
+<div class="btn-group" role="group" aria-label="Basic example">
+    {% if viewing == 'all' %}
+    <a href="{% url 'grocs:list_active' %}" class="btn btn-outline-dark">View Active Lists</a>
+    {% else %}
+    <a href="{% url 'grocs:list_all' %}" class="btn btn-outline-dark">View All Lists</a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block pagetitle %}
+GMan
+{% endblock %}
+
+{% block rightnav %}
+<a class='btn btn-outline-dark' href="{% url 'grocs:create' %}">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+        <use href="{% static 'site_icons.svg' %}#icon-plus-lg"></use>
+    </svg>
+</a>
+{% endblock %}
+
+{% block content %}
+<div class='d-flex flex-column'>
+<ul class="list-group">
+    {% for glist in glists %}
+    <li class="list-group-item {% if glist.completed %}list-group-item-success{% endif %} d-flex">
+        <div class='me-auto'>
+            <div class='fw-bold fs-6'>
+                <a class="link-dark" href="{% url 'grocs:edit' glist.id %}">
+                    {{glist.title}}
+                </a>
+            </div>
+            <small class='text-muted'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                    <use href="{% static 'site_icons.svg' %}#icon-stopwatch"></use>
+                </svg>
+                {{glist.updated|timesince|shorten_date}} ago
+            </small>
+            &middot;
+            <form class="d-inline" action="{% url 'grocs:delete' glist.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger badge">Delete</button>
+            </form>
+        </div>
+        <div class="d-flex flex-column align-items-end">
+            <div>
+                <small class='text-muted'>{{glist.num_items}} items</small>
+            </div>
+            {% if glist.completed %}
+            <div class="badge bg-success rounded-pill">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                    <use href="{% static 'site_icons.svg' %}#icon-check-lg"></use>
+                </svg>
+            </div>
+            {% else %}
+            <div>
+                <a  class="badge btn btn-info " href="{% url 'grocs:shopping' glist.id %}">
+                    Shopping
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </li>
+    {% empty %}
+    <p class='list-group-item list-group-item-secondary text-center'>No lists yet! Why not make one?</p>
+    {% endfor %}
+</ul>
+
+<div class="pagination align-self-center my-2">
+    <span class="step-links">
+        <a class='btn btn-sm btn-outline-dark {% if not page_obj.has_previous %}disabled{% endif %}' {% if page_obj.has_previous %}href="?page=1"{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-chevron-double-left"></use>
+            </svg>
+        </a>
+        <a class='btn btn-sm btn-outline-dark {% if not page_obj.has_previous %}disabled{% endif %}' {% if page_obj.has_previous %}href="?page={{ page_obj.previous_page_number }}"{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-chevron-left"></use>
+            </svg>
+        </a>
+
+        <span class='align-self-end'>
+            {{ page_obj.number }}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-signpost-split"></use>
+            </svg>
+            {{ page_obj.paginator.num_pages }}
+        </span>
+
+        <a class='btn btn-sm btn-outline-dark {% if not page_obj.has_next %}disabled{% endif %}' {% if page_obj.has_next %}href="?page={{ page_obj.next_page_number }}{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-chevron-right"></use>
+            </svg>
+        </a>
+        <a class='btn btn-sm btn-outline-dark {% if not page_obj.has_next %}disabled{% endif %}' {% if page_obj.has_next %}href="?page={{ page_obj.paginator.num_pages }}{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-chevron-double-right"></use>
+            </svg>
+        </a>
+    </span>
+</div>
+</div>
+{% endblock content %}

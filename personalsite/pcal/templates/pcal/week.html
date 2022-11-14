@@ -1,0 +1,516 @@
+{% extends 'pcal/base.html' %}
+{% load static %}
+
+{% block title %}Week of {{dates.0|date:"M j"}}{% endblock %}
+
+{% block sitecontent %}
+<div class="calendar-container">
+  <div class="d-flex justify-content-around">
+    <div class="d-flex align-items-center">
+      <a class="btn btn-sm btn-outline-dark text-nowrap" href="{% url 'pcal:week' prev_sun|date:'Y' prev_sun|date:'m' prev_sun|date:'d' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+          <use href="{% static 'site_icons.svg' %}#icon-chevron-left"></use>
+        </svg>
+        {{prev_sun|date:"M j"}}
+      </a>
+      <h1 class="mb-0 mx-3 fs-sm-5 week-title">{{title}}</h1>
+      <a class="btn btn-sm btn-outline-dark text-nowrap" href="{% url 'pcal:week' next_sun|date:'Y' next_sun|date:'m' next_sun|date:'d' %}">
+        {{next_sun|date:"M j"}}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+          <use href="{% static 'site_icons.svg' %}#icon-chevron-right"></use>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="d-flex week-grid-headers" id="week-grid-headers">
+    <div class="side-gutter"></div>
+    {% for date in dates %}
+    <div class="w-100">
+      <div class="m-0 date-label text-muted text-center" data-date="{{date|date:'Y-m-d'}}">
+        <div class="small">{{date|date:"D"|upper}}</div>
+        <div class="fs-2 mt-n2">{{date|date:"j"}}</div>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="side-gutter-right"></div>
+  </div>
+
+  <div>
+    {% for ev in date_range_events %}
+    <div class="d-flex date-range-event-row">
+      <div class="side-gutter"></div>
+      <div class="position-relative {% if forloop.last %}bottom-shadow{% endif %}" style="width: {{dates|length}}00%;">
+        <div class="d-flex date-range-event fw-bold" style="left: {{ev.left}}%; width: {{ev.width}}%;" id="date-range-event-{{ev.id}}">
+          {% if ev.overflow_start %}
+          <div class="triangle-left"></div>
+          {% endif %}
+          <div
+            class="border-light bg-primary text-light ps-1 pt-1 pe-2 text-nowrap overflow-hidden {% if not ev.overflow_start and not ev.overflow_end %}rounded{% elif not ev.overflow_start %}rounded-start{% elif not ev.overflow_end %}rounded-end{% endif %}"
+            style="flex: 1;"
+          >
+            {{ev.title}}
+          </div>
+          {% if ev.overflow_end %}
+          <div class="triangle-right"></div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="side-gutter-right"></div>
+    </div>
+    {% empty %}
+    <div class="d-flex date-range-event-row" style="height: 10px;">
+      <div class="side-gutter"></div>
+      <div class="bottom-shadow" style="width: {{dates|length}}00%"></div>
+      <div class="side-gutter-right"></div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="d-flex overflow-auto week-grid pt-2" id="week-grid">
+    <div class="side-gutter">
+      {% for hour in hours %}
+      <div class="hour-label-container">
+        <small class="hour-label text-muted">{{hour}}</small>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% for date in dates %}
+    <div class="weekday-container" id="weekday-{{forloop.counter0}}">
+      <div>
+        {% for hour in hours %}
+        <div class="hour-container border d-flex">
+        </div>
+        {% endfor %}
+      </div>
+      {% if forloop.first %}
+      <div id="now-circle" class="now-marker-circle" style="visibility: hidden;top: 400px;"></div>
+      <div id="now-marker" class="now-marker" style="visibility:hidden;top: 400px;"></div>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <div class="side-gutter-right">
+      {% for hour in hours %}
+      <div class="hour-label-container-right">
+        <small class="hour-label-right text-muted">{{hour}}</small>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="addEventOffCanvas" aria-labelledby="addEventOffCanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="addEventOffCanvasLabel">Add Event</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <form action="{% url 'pcal:add_event' %}" method="post" id="add-event-form">
+      <input name="viewing_week" value="{{dates.0|date:'Y-m-d'}}" hidden />
+      {% csrf_token %}
+      {{add_event_form.title.label}}
+      {{add_event_form.title}}
+
+      <hr class="text-muted">
+
+      <div class="form-check form-switch mt-2">
+        <input class="form-check-input" name="use_date_range" type="checkbox" id="useDateRange">
+        <label class="form-check-label" for="useDateRange">Use Date Range</label>
+      </div>
+
+      <div id="time-range-widgets">
+        {{add_event_form.date.label}}
+        {{add_event_form.date}}
+
+        <div class="row">
+          <div class="w-50">
+            {{add_event_form.start_time.label}}
+            {{add_event_form.start_time}}
+          </div>
+          <div class="w-50">
+            {{add_event_form.end_time.label}}
+            {{add_event_form.end_time}}
+          </div>
+        </div>
+      </div>
+      
+      <div id="date-range-widgets" hidden>
+        <div class="row">
+          <div class="w-50">
+            {{add_event_form.start_date.label}}
+            {{add_event_form.start_date}}
+          </div>
+          <div class="w-50">
+            {{add_event_form.end_date.label}}
+            {{add_event_form.end_date}}
+          </div>
+        </div>
+      </div>
+
+      <hr class="text-muted">
+
+      <div class="form-check form-switch mt-2">
+        <input class="form-check-input" name="is_recurring" type="checkbox" id="is_recurring">
+        <label class="form-check-label" for="is_recurring">Recurring?</label>
+      </div>
+
+      <div id="recurrence-widgets" hidden>
+        <div class="form-check form-switch mt-2">
+          <input class="form-check-input" name="use_weekday_recurrence" type="checkbox" id="use_weekday_recurrence">
+          <label class="form-check-label" for="use_weekday_recurrence">Use Weekday Recurrence</label>
+        </div>
+
+        <div id="interval-recurrence-widgets" style="display: flex;">
+          <div>Every</div>
+          {{add_event_form.interval_recurrence_every}}
+          {{add_event_form.interval_recurrence_unit}}
+        </div>
+
+        <div id="weekday-recurrence-widgets" hidden>
+          <div class="d-flex mb-2">
+            <div>Every</div>
+            {{add_event_form.weekday_recurrence_every}}
+          </div>
+          <div class="weekday-widget mb-2" id="weekday-widget">
+            <button type="button" class="weekday-widget-button" id="weekday-button-0" data-status="unchecked">S</button>
+            <button type="button" class="weekday-widget-button" id="weekday-button-1" data-status="unchecked">M</button>
+            <button type="button" class="weekday-widget-button" id="weekday-button-2" data-status="unchecked">T</button>
+            <button type="button" class="weekday-widget-button" id="weekday-button-3" data-status="unchecked">W</button>
+            <button type="button" class="weekday-widget-button" id="weekday-button-4" data-status="unchecked">T</button>
+            <button type="button" class="weekday-widget-button" id="weekday-button-5" data-status="unchecked">F</button>
+            <button type="button" class="weekday-widget-button" id="weekday-button-6" data-status="unchecked">S</button>
+          </div>
+          <input name="weekday_recurrence_weekdays" id="weekday_recurrence_weekdays" hidden />
+        </div>
+
+        {{add_event_form.recurrence_end_date.label}}
+        {{add_event_form.recurrence_end_date}}
+
+      </div>
+
+      <hr class="text-muted">
+
+      {{add_event_form.description.label}}
+      {{add_event_form.description}}
+      <button type="submit" class="btn btn-primary btn-sm mt-2">Save Event</button>
+    </form>
+  </div>
+</div>
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="eventDetailsOffCanvas" aria-labelledby="eventDetailsOffCanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="eventDetailsOffCanvasLabel">Event Details</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <h3 id="eventDetailsTitle"></h3>
+    <div id="eventDetailsTimeRange"></div>
+    <div id="eventDetailsDateRange"></div>
+    <div id="eventDetailsDescription"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{time_range_events|json_script:"time_range_events"}}
+{{date_range_events|json_script:"date_range_events"}}
+{{dates|json_script:"dates"}}
+<script>
+  const HOUR_HEIGHT = 48;
+  const time_range_events = JSON.parse(document.getElementById("time_range_events").textContent)
+  const date_range_events = JSON.parse(document.getElementById("date_range_events").textContent)
+  const dates = JSON.parse(document.getElementById("dates").textContent).map(dtm => dtm.slice(0, 10));
+
+  let selected_weekdays = (new Array(7)).fill(0);
+  function updateSelectedWeekdays() {
+    let vals = (new Array(7)).fill(0);
+    for (let i = 0; i < vals.length; i++) {
+      vals[i] = document.getElementById(`weekday-button-${i}`).dataset.status === "checked" ? 1 : 0;
+    }
+    document.getElementById("weekday_recurrence_weekdays").value = vals.join('');
+  }
+
+  let addEventOC = bootstrap.Offcanvas.getOrCreateInstance('#addEventOffCanvas');
+  let eventDetailsOC = bootstrap.Offcanvas.getOrCreateInstance('#eventDetailsOffCanvas');
+  document.getElementById("addEventOffCanvas").addEventListener("hide.bs.offcanvas", (event) => {
+    for (let el of document.querySelectorAll(".week-event-ghost")) {
+      el.remove();
+    }
+  })
+  
+  function updateNow() {
+    let now = (new Date());
+    let top = now.getHours() * HOUR_HEIGHT + (now.getMinutes() * HOUR_HEIGHT / 60);
+    let day = now.getDay();
+    let dayCont = document.getElementById(`weekday-${day}`);
+    let nowMarker = document.getElementById("now-marker");
+    let nowCircle = document.getElementById("now-circle");
+    nowMarker.style["top"] = `${top}px`;
+    nowCircle.style["top"] = `${top}px`;
+    nowMarker.style["visibility"] = "visible";
+    nowCircle.style["visibility"] = "visible";
+    dayCont.appendChild(nowMarker);
+    dayCont.appendChild(nowCircle);
+    console.log("now marker updated")
+  }
+
+  // scroll to 8 AM
+  document.getElementById("week-grid").scrollTo({top: 364})
+  window.onload = () => {
+    // start update now loop
+    updateNow()
+    setInterval(updateNow, 1000*60*2);
+
+    populateEvents();
+    let events = document.getElementsByClassName("week-event");
+    for (let event of events) {
+      event.addEventListener("click", (e) => {
+        e.stopImmediatePropagation();
+
+        console.log(event);
+        document.getElementById("eventDetailsTitle").textContent = event.dataset.title;
+        document.getElementById("eventDetailsDescription").innerHTML = event.dataset.description.replace('\n', '<br>');
+        document.getElementById("eventDetailsTimeRange").textContent = getTimeSubtitle(event.dataset.startTime, event.dataset.endTime);
+        document.getElementById("eventDetailsDateRange").textContent = "";
+        eventDetailsOC.show();
+      })
+    }
+
+    for (let event of date_range_events) {
+      let el = document.getElementById(`date-range-event-${event.id}`);
+      el.addEventListener("click", (e) => {
+        e.stopImmediatePropagation();
+        console.log(el)
+
+        document.getElementById("eventDetailsTitle").textContent = event.title;
+        document.getElementById("eventDetailsDescription").innerHTML = event.description.replace('\n', '<br>');
+        eventDetailsOC.show();
+      })
+    }
+
+    document.getElementById("useDateRange").addEventListener("change", (event) => {
+      if (document.getElementById("useDateRange").checked) {
+        document.getElementById("time-range-widgets").hidden = true;
+        document.getElementById("date-range-widgets").hidden = false;
+      } else {
+        document.getElementById("time-range-widgets").hidden = false;
+        document.getElementById("date-range-widgets").hidden = true;
+      }
+    })
+
+    document.getElementById("is_recurring").addEventListener("change", (event) => {
+      if (document.getElementById("is_recurring").checked) {
+        document.getElementById("recurrence-widgets").hidden = false;
+      } else {
+        document.getElementById("recurrence-widgets").hidden = true;
+      }
+    })
+    document.getElementById("use_weekday_recurrence").addEventListener("change", (event) => {
+      if (document.getElementById("use_weekday_recurrence").checked) {
+        document.getElementById("interval-recurrence-widgets").hidden = true;
+        document.getElementById("weekday-recurrence-widgets").hidden = false;
+      } else {
+        document.getElementById("interval-recurrence-widgets").hidden = false;
+        document.getElementById("weekday-recurrence-widgets").hidden = true;
+      }
+    })
+
+    document.getElementById("weekday-widget").addEventListener("click", (event) => {
+      let button = event.target.closest("button")
+      if (button !== null) {
+        if (button.dataset.status === 'unchecked') {
+          button.dataset.status = 'checked';
+        } else {
+          button.dataset.status = 'unchecked';
+        }
+        button.style["background-color"] = button.dataset.status === 'checked' ? '#FAA17A' : 'white';
+
+        let day = parseInt(button.id.replace("weekday-button-", ""));
+        updateSelectedWeekdays();
+      }
+    })
+  }
+
+  function getHourAndMinute(parentOffset, offset) {
+    let hour = parentOffset/HOUR_HEIGHT;
+    let eighthHeight = HOUR_HEIGHT / 8;
+    if (offset <= eighthHeight) {
+      return [hour, 0];
+    } else if (offset > eighthHeight && offset <= 3*eighthHeight) {
+      return [hour, 15];
+    } else if (offset > 3*eighthHeight && offset <= 5*eighthHeight) {
+      return [hour, 30];
+    } else if (offset > 5*eighthHeight && offset <= 7*eighthHeight) {
+      return [hour, 45];
+    } else if (offset > 7*eighthHeight) {
+      return [hour+1, 0];
+    }
+  }
+
+  function zeroPad(number, length) {
+    let numStr = `${number}`;
+    if (numStr.length < length) {
+      let numZeros = length - numStr.length;
+      return '0'.repeat(numZeros) + numStr
+    } else {
+      return numStr;
+    }
+  }
+
+  function formatTime(hour, minute) {
+    return `${zeroPad(hour,2)}:${zeroPad(minute,2)}`
+  }
+
+  document.getElementById("week-grid-headers").addEventListener("click", (event) => {
+    let clickedDate = event.target.closest('.date-label').dataset.date;
+    document.getElementById("useDateRange").checked = true;
+    document.getElementById("useDateRange").dispatchEvent(new Event("change"));
+
+    document.getElementById("id_start_date").value = clickedDate;
+    document.getElementById("id_end_date").value = clickedDate;
+
+    document.getElementById("id_date").value = clickedDate;
+    document.getElementById("id_start_time").value = "09:00";
+    document.getElementById("id_end_time").value = "10:00";
+    
+    
+    addEventOC.show();
+  })
+
+  document.getElementById("week-grid").addEventListener("click", (event) => {
+    let dayIdx = parseInt(event.target.closest('.weekday-container').id.replace('weekday-', ''));
+    let [hour, minute] = getHourAndMinute(event.target.offsetTop, event.offsetY);
+    let startTime = formatTime(hour, minute);
+    let endTime;
+    if (hour + 1 >= 24) {
+      endTime = formatTime(23, 59);
+    } else {
+      endTime = formatTime(hour+1, minute);
+    }
+
+    // display ghost event
+    let ghostEvent = document.createElement("div");
+    ghostEvent.className = "week-event-ghost rounded border border-light text-light ps-1 pe-2 pt-1"
+    let top = hour * HOUR_HEIGHT + (minute/60) * HOUR_HEIGHT;
+    let height = HOUR_HEIGHT;
+    ghostEvent.style["top"] = `${top}px`;
+    ghostEvent.style["height"] = `${height}px`;
+
+    let title = document.createElement("div");
+    title.className = "text-nowrap overflow-hidden fw-bold";
+    title.textContent = "(New Event)";
+    ghostEvent.appendChild(title);
+
+    let timeSubtitle = getTimeSubtitle(startTime, endTime);
+    let subtitle = document.createElement("div");
+    subtitle.className = "text-nowrap overflow-hidden";
+    subtitle.textContent = timeSubtitle;
+    ghostEvent.appendChild(subtitle);
+
+    event.target.closest(".weekday-container").appendChild(ghostEvent);
+    console.log(ghostEvent)
+
+    document.getElementById("useDateRange").checked = false;
+    document.getElementById("useDateRange").dispatchEvent(new Event("change"));
+
+    document.getElementById("id_date").value = dates[dayIdx];
+    document.getElementById("id_start_time").value = startTime;
+    document.getElementById("id_end_time").value = endTime;
+
+    document.getElementById("id_start_date").value = dates[dayIdx];
+    document.getElementById("id_end_date").value = dates[dayIdx];
+
+    addEventOC.show();
+  })
+
+  document.getElementById("addEventOffCanvas").addEventListener("shown.bs.offcanvas", () => {
+    document.getElementById("id_title").focus();
+  })
+
+  function toTwelveHour(hour) {
+    if (hour < 0) {
+      throw Error("hour must be between 0 and 23 inclusive.")
+    } else if (hour === 0) {
+      return "12";
+    } else if (hour <= 12) {
+      return `${hour}`;
+    } else if (hour <= 23) {
+      return `${hour-12}`;
+    } else {
+      throw Error("hour must be between 0 and 23 inclusive.")
+    }
+  }
+  
+  function getTimeSubtitle(startTime, endTime) {
+    let startHour = parseInt(startTime.slice(0,2));
+    let startMinute = parseInt(startTime.slice(3,5));
+    let endHour = parseInt(endTime.slice(0,2));
+    let endMinute = parseInt(endTime.slice(3,5));
+
+    let timeSubtitle = "";
+    if (startMinute === 0) {
+      timeSubtitle += toTwelveHour(startHour);
+    } else {
+      timeSubtitle += toTwelveHour(startHour) + `:${startMinute}`;
+    }
+    if (startHour < 12 && endHour >= 12) {
+      timeSubtitle += 'am';
+    }
+
+    timeSubtitle += ' - ';
+
+    if (endMinute === 0) {
+      timeSubtitle += toTwelveHour(endHour);
+    } else {
+      timeSubtitle += toTwelveHour(endHour) + `:${endMinute}`;
+    }
+    if (endHour < 12) {
+      timeSubtitle += 'am';
+    } else {
+      timeSubtitle += 'pm';
+    }
+
+    return timeSubtitle;
+  }
+
+  function formatDate(d) {
+    return `${d.slice(5,7)}`
+  }
+  
+
+  function populateEvents() {
+    for (let day = 0; day < time_range_events.length; day++) {
+      let weekdayContainer = document.getElementById(`weekday-${day}`);
+
+      for (let event of time_range_events[day]) {
+        let eventEl = document.createElement("div");
+        eventEl.className = "week-event bg-primary rounded border border-light text-light ps-1 pe-2 pt-1"
+        eventEl.style["top"] = `${event.top_pos}px`;
+        eventEl.style["height"] = `${event.height}px`;
+        eventEl.dataset['link'] = event.url;
+        eventEl.dataset['title'] = event.title;
+        eventEl.dataset['description'] = event.description;
+        eventEl.dataset['date'] = event.date;
+        eventEl.dataset['startTime'] = event.start_time;
+        eventEl.dataset['endTime'] = event.end_time;
+
+        let title = document.createElement("div");
+        title.className = "text-nowrap overflow-hidden fw-bold";
+        title.textContent = event.title
+        eventEl.appendChild(title);
+
+        if (event.height > 0.7*HOUR_HEIGHT) {
+          let timeSubtitle = document.createElement("div");
+          timeSubtitle.className = "text-nowrap overflow-hidden";
+          timeSubtitle.textContent = event.time_subtitle;
+          eventEl.appendChild(timeSubtitle);
+        }
+
+        weekdayContainer.appendChild(eventEl);
+      }
+    }
+  }
+</script>
+{% endblock %}

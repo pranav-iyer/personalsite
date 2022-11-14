@@ -1,0 +1,22 @@
+{% extends 'site_base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block sitecontent %}
+<div class="d-flex justify-content-between">
+  {% include 'left_decor.html' %}
+  <div class="big-margins">
+    <h1>Welcome!</h1>
+    <p>
+      Hi! I'm Pranav, a Python developer. I mostly use this domain for little web apps to make my life easier,
+      and the occasional blog post.
+    </p>
+    <p>
+      Recently, I've been making a PIXI.js version of a mobile game I enjoy, Pixel Art.
+      Feel free to play around with <a href="{% url 'pixelart:demo' %}">the demo</a>&mdash;it
+      works best on a touchscreen, but is definitely playable with a mouse or touchpad.
+    </p>
+  </div>
+  {% include 'right_decor.html' %}
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'groceries/base.html' %}
+{% load static %}
+
+{% block title %}New List{% endblock title %}
+
+{% block pagetitle %}
+New List
+{% endblock %}
+
+{% block leftnav %}
+<a class='btn btn-outline-dark' href="{% url 'grocs:list_active' %}">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+    <use href="{% static 'site_icons.svg' %}#icon-journals"></use>
+  </svg>
+</a>
+{% endblock %}
+
+{% block content %}
+  <form class='d-flex flex-column' action='' method='POST' id='glist-edit-form'>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class='mb-3'>
+      <label class='form-label' for="{{field.auto_id}}">{{field.label}}</label>
+      {{field}}
+      </div>
+    {% endfor %}
+    <div>
+        <button class='btn btn-secondary' type='submit' id='save-button'>Create List</button>
+    </div>
+  </form>
+
+{% endblock content %}

@@ -1,0 +1,58 @@
+{% load compress %}
+{% load static %}
+<html>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+
+  <link rel="shortcut icon" href="{% static 'icons/favicon.ico' %}">
+  {% compress js %}
+  <script src="{% static 'pixelart/pixi.min.js' %}"></script>
+  <script src="{% static 'pixelart/pixi-sound.js' %}"></script>
+  {% endcompress %}
+
+  <title>Pixel Art</title>
+</head>
+<body style="margin: 0px;">
+    {% csrf_token %}
+<script type='module'>
+    import PixelArt from "{% static 'pixelart/pixelart.js' %}"
+    PIXI.Loader.shared
+        .add("/static/pixelart/numbers_spritesheet.json")
+        .load(startPixelArt)
+
+    async function startPixelArt() {
+        const pa_config = {
+            "width": document.body.clientWidth,
+            "height": document.body.clientHeight
+        }
+        {% if save_data.statuses %}
+        const pa = await PixelArt.build("{{ art_piece.pixart.url }}", `{{save_data.statuses}}`, pa_config)
+        {% else %}
+        const pa = await PixelArt.build("{{ art_piece.pixart.url }}", "", pa_config)
+        {% endif %}
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+        // fetch("{% static 'pixelart/frog.pixart' %}").then((res) => res.text()).then((t) => newNode.innerText = t)
+        document.body.appendChild(pa.app.view)
+        const saveOnClick = () => {
+            if (pa.saveDirty) {
+                let data = pa.getSaveData()
+                data.append("user", {{request.user.id}})
+                data.append("art_piece", {{art_piece.id}})
+                data.append("save_id", {{save_data.id}})
+                fetch("{% url 'pixelart:save' %}", {
+                    method: "POST",
+                    headers: {"X-CSRFToken": csrftoken},
+                    body: data,
+                }).then(res => console.log("saved."))
+            }
+        }
+        document.body.addEventListener("mouseup", saveOnClick)
+        document.body.addEventListener("touchend", saveOnClick)
+    }
+</script>
+</body>

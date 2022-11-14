@@ -1,0 +1,32 @@
+{% extends 'site_base.html' %}
+{% load static %}
+{% block sitecontent %}
+    {% if dup_trans %}
+    <div class="alert alert-danger border border-danger">
+        <b>Duplicate:</b> {{dup_trans.date|date:"m/d/Y"}} | <i>{{dup_trans.description}}</i> | ${{dup_trans.amount}}
+    </div>
+    {% endif %}
+    Original Message
+    <div class="alert alert-success border">{{msg}}</div>
+    {% if error %}
+        <p class="text-danger"><strong>Error:</strong> {{error}}</p>
+    {% else %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            <label for="amount">Amount</label>
+            <input name="amount" id="amount" value="{{amount}}" class="form-control" />
+            <label for="description">Description</label>
+            <input name="description" id="description" value="{{description}}" class="form-control" />
+            <label for="date">Date</label>
+            <input name="date" id="date" value="{{date}}" class="form-control" />
+            
+            <label for="category">Which category does this transaction belong to:</label>
+            <select name="category" class="form-select mb-2" id="category">
+                {% for cho in category_choices %}
+                <option value={{cho.0}}>{{cho.1}}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary" type="submit">Save Transaction</button>
+        </form>
+    {% endif %}
+{% endblock %}

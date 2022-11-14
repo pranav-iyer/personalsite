@@ -1,0 +1,37 @@
+{% extends 'groceries/base.html' %}
+{% load static %}
+
+{% block title %}{{glist.title}}{% endblock title %}
+
+{% block pagetitle %}
+{% if form.instance.completed %}Completed List{% else %}Edit List{% endif %}
+{% endblock %}
+
+{% block leftnav %}
+<a class='btn btn-outline-dark' href="{% if form.instance.completed %}{% url 'grocs:list_all' %}{% else %}{% url 'grocs:list_active' %}{% endif %}">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+    <use href="{% static 'site_icons.svg' %}#icon-journals"></use>
+  </svg>
+</a>
+{% endblock %}
+
+{% block content %}
+  <form class='d-flex flex-column' action='' method='POST' id='glist-edit-form'>
+    <fieldset {% if form.instance.completed %}disabled{% endif %}>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class='mb-3'>
+        <label class='form-label' for="{{field.auto_id}}">{{field.label}}</label>
+        {{field}}
+        </div>
+      {% endfor %}
+      {% if not form.instance.completed %}
+      <div>
+        <input class='btn btn-secondary' type='submit' name="submit_save" value="Save List">
+        <input class='btn btn-info' type='submit' name="submit_shopping" value="Shopping">
+      </div>
+      {% endif %}
+    </fieldset>
+  </form>
+
+{% endblock content %}

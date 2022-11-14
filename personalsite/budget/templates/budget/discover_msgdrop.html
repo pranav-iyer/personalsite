@@ -1,0 +1,19 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block sitecontent %}
+Paste the Discover text message below:
+<form id="msgdrop-form" action="{% url 'budget:discover' %}" method="GET">
+    <textarea name="msg" id="msg" class="form-control"></textarea>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById("msgdrop-form").addEventListener("formdata", (event) => {
+        let msg = event.formData.get("msg");
+        event.formData.set("msg", btoa(msg));
+    });
+</script>
+{% endblock scripts %}

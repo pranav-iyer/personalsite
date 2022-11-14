@@ -1,0 +1,15 @@
+{% extends 'site_base.html' %}
+{% block title %}Add Image - {{post.title|truncatechars:20}}{% endblock %}
+
+{% block sitecontent %}
+<form enctype="multipart/form-data" action="" method="post">
+    <div class="container-md">
+        {% csrf_token %}
+        <h1>{{post_title}}</h1>
+        <p>Add an image to this blog post:</p>
+        {{form.as_p}}
+        <button type="submit" class="btn btn-secondary">Submit</button>
+        <a class="btn btn-danger" href="{% url 'blog:edit' post_id %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

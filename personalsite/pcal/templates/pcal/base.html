@@ -1,0 +1,9 @@
+{% extends 'site_base.html' %}
+{% load static %}
+{% load compress %}
+
+{% block headscripts %}
+{% compress css %}
+<link type="text/x-scss" rel="stylesheet" media="screen" href="{% static 'css/pcal.scss' %}">
+{% endcompress %}
+{% endblock %}

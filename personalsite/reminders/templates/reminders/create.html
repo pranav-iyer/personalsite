@@ -1,0 +1,37 @@
+{% extends 'reminders/base.html' %}
+
+{% block title %}RMan - Create New Reminder{% endblock %}
+
+{% block content %}
+<h1>Setup a Reminder</h1>
+<form action='' method='POST'>
+    {% csrf_token %}
+    {% for field in form %}
+        {{field.label_tag}}
+        {{field}}
+        {% for err in field.errors %}
+        <div class="small text-danger">{{err}}</div>
+        {% endfor %}
+    {% endfor %}
+    {% for err in form.non_field_errors %}
+    <div class="small text-danger">{{err}}</div>
+    {% endfor %}
+    <input class='btn btn-success my-2' type='submit' value='Create Reminder'>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.querySelector("[for='id_custom_time']").hidden = true;
+    document.getElementById("id_custom_time").hidden = true;
+    document.getElementById("id_reminder_time").addEventListener("change", (event) => {
+        if (event.target.value === "custom") {
+            document.querySelector("[for='id_custom_time']").hidden = false;
+            document.getElementById("id_custom_time").hidden = false;
+        } else {
+            document.querySelector("[for='id_custom_time']").hidden = true;
+            document.getElementById("id_custom_time").hidden = true;
+        }
+    })
+</script>
+{% endblock %}

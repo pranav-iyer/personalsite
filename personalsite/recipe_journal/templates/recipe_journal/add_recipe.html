@@ -1,0 +1,179 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}Add Recipe - Recipe Journal{% endblock %}
+
+{% block sitecontent %}
+<p class='mb-0'>
+    <h1>Add Recipe</h1>
+    <form enctype="multipart/form-data" action="" method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Recipe Title</label>
+            {{form.title}}
+            <hr />
+            <label>Recipe URL</label>
+            {{form.url}}
+            <div class="text-center">OR</div>
+            <label>Recipe Text</label>
+            {{form.raw_text}}
+            <div class="text-center">OR</div>
+            <label>Recipe Images (choose up to 10)</label>
+            <div class="d-flex align-items-center">
+                {{form.photo1}} <button type="button" class="btn-close" id="clear-photo-1"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo2}} <button type="button" class="btn-close" id="clear-photo-2"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo3}} <button type="button" class="btn-close" id="clear-photo-3"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo4}} <button type="button" class="btn-close" id="clear-photo-4"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo5}} <button type="button" class="btn-close" id="clear-photo-5"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo6}} <button type="button" class="btn-close" id="clear-photo-6"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo7}} <button type="button" class="btn-close" id="clear-photo-7"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo8}} <button type="button" class="btn-close" id="clear-photo-8"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo9}} <button type="button" class="btn-close" id="clear-photo-9"></button>
+            </div>
+            <div class="d-flex align-items-center">
+                {{form.photo10}} <button type="button" class="btn-close" id="clear-photo-10"></button>
+            </div>
+            {% for error in form.non_field_errors %}
+            <div class="text-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                    <use href="{% static 'site_icons.svg' %}#icon-exclamation-circle-fill"></use>
+                </svg>
+                {{error}}
+            </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary" type="submit">Save Recipe</button>
+    </form>
+</p>
+
+<a class='h3' href="{% url 'recipe_journal:index' %}">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+        <use href="{% static 'site_icons.svg' %}#icon-arrow-left-circle"></use>
+    </svg>
+</a>
+{% endblock %}}
+
+{% block scripts %}
+<script>
+    document.getElementById("id_title").classList.add("form-control");
+    document.getElementById("id_url").classList.add("form-control");
+    document.getElementById("id_raw_text").classList.add("form-control");
+    for (let i = 1; i < 11; i++) {
+        document.getElementById(`id_photo${i}`).classList.add("form-control");
+        document.getElementById(`id_photo${i}`).addEventListener('change', makeImageInputsVisible);
+    }
+
+    function makeImageInputsVisible() {
+        let foundFile = false;
+        for (let i = 10; i >= 1; i--) {
+            if (i >= 2) {
+                document.getElementById(`id_photo${i}`).hidden = false;
+                document.getElementById(`clear-photo-${i}`).hidden = false;
+            }
+            if (document.getElementById(`id_photo${i}`).value !== "") {
+                for (let j = i+2; j < 11; j++) {
+                    document.getElementById(`id_photo${j}`).hidden = true;
+                    document.getElementById(`clear-photo-${j}`).hidden = true;
+                }
+                foundFile = true;
+                break;
+            }
+        }
+        if (!foundFile) {
+            for (let j = 2; j < 11; j++) {
+                document.getElementById(`id_photo${j}`).hidden = true;
+                document.getElementById(`clear-photo-${j}`).hidden = true;
+            }
+        }
+    }
+
+    function clearPhoto(photoNum) {
+        document.getElementById(`id_photo${photoNum}`).value = '';
+    }
+
+    for (let i = 1; i < 11; i++) {
+        document.getElementById(`clear-photo-${i}`).addEventListener("click", () => {
+            clearPhoto(i);
+            makeImageInputsVisible();
+        })
+    }
+
+    makeImageInputsVisible();
+
+    // disable other inputs when one is filled
+    document.getElementById("id_url").addEventListener("input", (event) => {
+        if (event.target.value === "") {
+            document.getElementById("id_raw_text").disabled = false;
+            for (let i = 1; i < 11; i++) {
+                document.getElementById(`id_photo${i}`).disabled = false;
+            }
+        } else {
+            document.getElementById("id_raw_text").disabled = true;
+            for (let i = 1; i < 11; i++) {
+                document.getElementById(`id_photo${i}`).disabled = true;
+            }
+        }
+    })
+
+    document.getElementById("id_raw_text").addEventListener("input", (event) => {
+        if (event.target.value === "") {
+            document.getElementById("id_url").disabled = false;
+            for (let i = 1; i < 11; i++) {
+                document.getElementById(`id_photo${i}`).disabled = false;
+            }
+        } else {
+            document.getElementById("id_url").disabled = true;
+            for (let i = 1; i < 11; i++) {
+                document.getElementById(`id_photo${i}`).disabled = true;
+            }
+        }
+    })
+
+    function checkFilesEmpty() {
+        for (let j = 1; j < 11; j++) {
+            if (document.getElementById(`id_photo${j}`).value !== "") {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    for (let i = 1; i < 11; i++) {
+        document.getElementById(`id_photo${i}`).addEventListener('change', (event) => {
+            if (checkFilesEmpty()) {
+                document.getElementById("id_url").disabled = false;
+                document.getElementById("id_raw_text").disabled = false;
+            } else {
+                document.getElementById("id_url").disabled = true;
+                document.getElementById("id_raw_text").disabled = true;
+            }
+        });
+        document.getElementById(`clear-photo-${i}`).addEventListener("click", (event) => {
+            if (checkFilesEmpty()) {
+                document.getElementById("id_url").disabled = false;
+                document.getElementById("id_raw_text").disabled = false;
+            } else {
+                document.getElementById("id_url").disabled = true;
+                document.getElementById("id_raw_text").disabled = true;
+            }
+        });
+    }
+
+</script>
+{% endblock %}

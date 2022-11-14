@@ -1,0 +1,30 @@
+{% extends 'site_base.html' %}
+{% block title %}Recipe Journal{% endblock %}
+
+{% block sitecontent %}
+<p class='mb-0'>
+    <h3>Choose a Recipe:</h3>
+    <select class="form-control" id="recipe-searchbar">
+        <option selected value hidden disabled></option>
+        {% for recipe in recipes %}
+        <option value="{{recipe.pk}}">{{recipe.title}}</option>
+        {% endfor %}
+    </select>
+    <h4>Or...</h4>
+    <a class="btn btn-primary" href="{% url 'recipe_journal:add_recipe' %}">Add a New Recipe</a>
+</p>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const choices = new Choices("#recipe-searchbar", {
+        addItems: true
+    });
+    document.getElementById("recipe-searchbar").addEventListener("choice", (event) => {
+        console.log(event);
+        if (event.detail.choice.value !== "") {
+            window.location.assign(`/recipe-journal/recipe/${event.detail.choice.value}/`);
+        }
+    })
+</script>
+{% endblock %}

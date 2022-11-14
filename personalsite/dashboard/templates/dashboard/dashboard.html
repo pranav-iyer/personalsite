@@ -1,0 +1,291 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block sitecontent %}
+<div class="d-flex justify-content-between">
+    <div class='dash-blocks-container mx-auto'>
+        <div class='p-2' class="dash-block" id='dash-block-hello'>
+            <h1 class='display-1 text-center my-0 py-0'>Hello, {{request.user.get_short_name}}</h1>
+            <p class="text-center subtitle-font my-0 py-0" id="dash-datetime-info"></p>
+        </div>
+        <div class='p-2' class="dash-block" id='dash-block-search'>
+            <form class="mx-auto mb-0" id="search-form" style="max-width: 500px;">
+                <div class="input-group">
+                    <input class="form-control py-2 px-3" id="search-field" type="text"
+                        placeholder="URL or DuckDuckGo..." autocomplete="off" required autofocus>
+                    <button class="btn btn-primary py-2 px-3" value="Search" type="submit">Go</button>
+                </div>
+            </form>
+        </div>
+        <div class="p-2 dash-block" id='dash-block-freqvis'>
+            <h5>Frequently Visited</h5>
+            <a href="https://netflix.com"><img class="popout-button favorite-site-icon"
+                    src="{% static 'icons/netflix.png' %}" /></a>
+            <a href="https://youtube.com"><img class="popout-button favorite-site-icon"
+                    src="{% static 'icons/youtube.png' %}" /></a>
+            <a href="https://gmail.com"><img class="popout-button favorite-site-icon"
+                    src="{% static 'icons/gmail.png' %}" /></a>
+            <a href="https://maps.google.com"><img class="popout-button favorite-site-icon"
+                    src="{% static 'icons/google_maps.ico' %}" /></a>
+            <a href="https://drive.google.com"><img class="popout-button favorite-site-icon"
+                    src="{% static 'icons/google_drive.png' %}" /></a>
+            <a href="https://messenger.com"><img class="popout-button favorite-site-icon"
+                    src="{% static 'icons/messenger.png' %}" /></a>
+            <a href="https://github.com/pranav-iyer"><img class="popout-button favorite-site-icon"
+                    src="{% static 'icons/github.png' %}" /></a>
+            <a href="https://docs.google.com/spreadsheets/d/1m0WfOcNkQ4oJejPW9SC20ebLilVnVnaEPGfp6J4U6lc"><img
+                    class="popout-button favorite-site-icon" src="{% static 'icons/recipe_master.png' %}" /></a>
+        </div>
+        <div class="p-2 dash-block" id='dash-block-managers'>
+            <h5>Managers</h5>
+            <a href="{% url 'grocs:list_active' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/cart-fill.png' %}" /></a>
+            <a href="{% url 'reminders:create' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/journal-bookmark-fill.png' %}" /></a>
+            <!-- <a href="{% url 'yesman:list' %}"><img class="popout-button dash-manager-icon" src="{% static 'icons/hand-thumbs-up-fill.png' %}" /></a> -->
+            <a href="{% url 'ktc:add' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/heart-half.png' %}" /></a>
+            <a href="{% url 'pixelart:list' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/pixart_logo.png' %}" /></a>
+            <a href="{% url 'recipe_journal:index' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/receipt.png' %}" /></a>
+            <!-- <a href="{{ingman_url}}"><img class="popout-button dash-manager-icon" src="{% static 'icons/bar-chart-steps.png' %}" /></a> -->
+            <!-- <a href="{% url 'ktc:work_checklist' %}"><img class="popout-button dash-manager-icon" src="{% static 'icons/tools.png' %}" /></a> -->
+            <a href="{% url 'budget:home' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/currency-dollar.png' %}" /></a>
+            <a href="{% url 'pcal:home' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/calendar3.png' %}" /></a>
+            <a href="{% url 'public:fav_chars' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/keyboard-fill.png' %}" /></a>
+        </div>
+        <div class="p-2 dash-block" id="dash-block-tasks">
+            <form action="{% url 'yesman:create' %}" method="post">
+                {% csrf_token %}
+                <div class="d-flex align-items-center mb-2">
+                    <h5 class="mb-0 me-2 text-nowrap">To-Do</h5>
+                    <div class="input-group ms-auto w-75">
+                        <input name="info" class="form-control form-control-sm" placeholder="New Task" />
+                        <button type="submit" class="btn btn-sm btn-outline-dark">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon"
+                                viewBox="0 0 16 16">
+                                <use href="{% static 'site_icons.svg' %}#icon-plus-lg"></use>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <ul class="list-group ms-1">
+                {% for yes in yeses %}
+                <li class="list-group-item d-flex align-items-center todo-item">
+                    <span class="me-1">{{yes.info}}</span>
+                    <a class="btn btn-sm btn-success ms-auto" href="{% url 'yesman:complete' yes.id %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon"
+                            viewBox="0 0 16 16">
+                            <use href="{% static 'site_icons.svg' %}#icon-check-lg"></use>
+                        </svg>
+                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-secondary dropdown-toggle ms-1" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon"
+                                viewBox="0 0 16 16">
+                                <use href="{% static 'site_icons.svg' %}#icon-bell-fill"></use>
+                            </svg>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for c in reminder_timing_choices %}
+                            <li>
+                                <a class="dropdown-item"
+                                    href="{% url 'yesman:remind' yes.id %}?time_code={{c.0}}">{{c.1}}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="list-group-item d-flex justify-content-center text-muted todo-item">All done!</li>
+                {% endfor %}
+                {% if num_extra_yeses > 0 %}
+                <li class="list-group-item d-flex justify-content-center text-muted todo-item">
+                    + {{num_extra_yeses}} more...
+                    &nbsp;
+                    <a href="{% url 'yesman:list' %}">(View in YesMan)</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="p-2 dash-block" id="dash-block-gman">
+            <div class="d-flex align-items-center mb-2">
+                <h5>Active Lists</h5>
+                <div class="ms-auto">
+                    <a href="{% url 'grocs:create' %}" class="btn btn-outline-dark btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon"
+                            viewBox="0 0 16 16">
+                            <use href="{% static 'site_icons.svg' %}#icon-plus-lg"></use>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <ul class="list-group ms-1">
+                {% for glist in glists %}
+                <li class="list-group-item todo-item">
+                    <div class="me-1 fw-bold">
+                        <a class="link-dark" href="{% url 'grocs:edit' glist.id %}">
+                            {{glist.title}}
+                        </a>
+                    </div>
+                    <form action="{% url 'grocs:save_glist_from_dash' glist.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="d-flex align-items-center">
+                            <input name="title" value="{{glist.title}}" hidden />
+                            <textarea style="resize:none;" class="form-control me-2" name="contents"
+                                rows="6">{{glist.contents}}</textarea>
+                            <div>
+                                <div>
+                                    <input type="submit" class="mb-2 btn btn-sm btn-secondary" value="Save List"
+                                        name="submit_save">
+                                </div>
+                                <div>
+                                    <input type="submit" class="mb-2 btn btn-sm btn-info" value="Shopping"
+                                        name="submit_shopping">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+                {% endfor %}
+                <li class="list-group-item d-flex justify-content-center text-muted text-nowrap todo-item">
+                    {% if num_extra_glists > 0 %}
+                    + {{num_extra_glists}} more...
+                    &nbsp;
+                    {% elif not glists %}
+                    No lists here!&nbsp;
+                    {% endif %}
+                    <a href="{% url 'grocs:list_active' %}">(View in GMan)</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% csrf_token %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // search bar handler
+    const allowedTlds = [".com", ".net", ".org", ".gov", ".edu", "127.0.0.1:8000", ".no"]
+    let favoriteSites = ["netflix.com", "messenger.com", "youtube.com", "facebook.com", "twitter.com", "gmail.com", "maps.google.com", "drive.google.com", "github.com", "google.com", "127.0.0.1:8000", "nytimes.com", "instagram.com", "cooking.nytimes.com", "sheets.google.com", "docs.google.com", "tdbank.com", "discover.com", "actblue.com", "calendar.google.com", "translate.google.com", "nrk.no", "tv.nrk.no", "ordbokene.no", "feedly.com", "jessicapiperformissouri.com"]
+    favoriteSites = favoriteSites.concat(favoriteSites.filter(url => url !== "127.0.0.1:8000").map(url => "www." + url))
+    const autocompleteHandler = (event) => {
+        const mainInput = document.getElementById("search-field");
+
+        if (event.data === null) {
+            mainInput.value = mainInput.value.slice(0, mainInput.selectionStart)
+            return;
+        }
+        const currentText = mainInput.value;
+        let matchingText = currentText;
+        for (let favSite of favoriteSites) {
+            if (favSite.startsWith(currentText)) {
+                matchingText = favSite;
+                break;
+            }
+        }
+        mainInput.value = matchingText;
+        mainInput.setSelectionRange(currentText.length, matchingText.length);
+
+    }
+    document.getElementById("search-field").addEventListener("input", autocompleteHandler);
+
+    const searchHandler = (searchText) => {
+        var parsedUrl = ""
+        var fullUrl = ""
+        if (/\s/g.test(searchText) || !searchText.includes(".")) {
+            fullUrl = `https://duckduckgo.com/?q=${searchText}`
+        } else if (!allowedTlds.some((tld) => searchText.includes(tld))) {
+            fullUrl = `https://duckduckgo.com/?q=${searchText}`
+        } else {
+            if (searchText.startsWith("https://")) {
+                parsedUrl = searchText.slice(8)
+            } else if (searchText.startsWith("http://")) {
+                parsedUrl = searchText.slice(7)
+            } else {
+                parsedUrl = searchText
+            }
+            fullUrl = "https://" + parsedUrl
+        }
+        window.open(fullUrl, "_self")
+    }
+    document.getElementById("search-form").onsubmit = (event) => {
+        event.preventDefault();
+        const searchText = String(document.getElementById("search-field").value)
+
+        // log search for admin users
+        const data = new FormData()
+        data.append("searchText", searchText)
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+        fetch("{% url 'searches:log' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            body: data,
+        }).then(res => {
+            console.log("Successfully logged search.")
+        })
+        searchHandler(searchText);
+    }
+
+    // printing date and time
+    const date = new Date();
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    const numberSuffixes = [...Array(32).keys()].map((n) => {
+        if ([1, 21, 31].includes(n)) {
+            return "st";
+        } else if ([2, 22].includes(n)) {
+            return "nd";
+        } else if ([3, 23, 33].includes(n)) {
+            return "rd";
+        } else {
+            return "th";
+        }
+    })
+    const minuteString = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+    const hourString = date.getHours() % 12 == 0 ? date.getHours() % 12 + 12 : date.getHours() % 12
+    document.getElementById("dash-datetime-info").innerText = `It's ${hourString}:${minuteString}${date.getHours() >= 12 ? "PM" : "AM"} on ${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}${numberSuffixes[date.getDate()]}.`
+
+    // making buttons click nicely
+    var favSiteIcons = [...document.getElementsByClassName("popout-button")]
+
+    const originalBoxShadows = favSiteIcons.map((element) => element.style['box-shadow'])
+
+    favSiteIcons.forEach((element, index) => {
+        element.addEventListener("mousedown", (event) => {
+            event.target.style['transform'] = 'translate(3px, 3px)'
+            event.target.style['box-shadow'] = 'none'
+        })
+        element.addEventListener("touchstart", (event) => {
+            event.target.style['transform'] = 'translate(3px, 3px)'
+            event.target.style['box-shadow'] = 'none'
+        })
+        element.addEventListener("mouseup", (event) => {
+            event.target.style.removeProperty("transform")
+            event.target.style['box-shadow'] = originalBoxShadows[index]
+        })
+        element.addEventListener("mouseleave", (event) => {
+            event.target.style.removeProperty("transform")
+            event.target.style['box-shadow'] = originalBoxShadows[index]
+        })
+        element.addEventListener("touchend", (event) => {
+            event.target.style.removeProperty("transform")
+            event.target.style['box-shadow'] = originalBoxShadows[index]
+        })
+        element.addEventListener("touchcancel", (event) => {
+            event.target.style.removeProperty("transform")
+            event.target.style['box-shadow'] = originalBoxShadows[index]
+        })
+    })
+</script>
+{% endblock %}

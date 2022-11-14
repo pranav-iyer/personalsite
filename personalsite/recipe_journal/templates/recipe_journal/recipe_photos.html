@@ -1,0 +1,55 @@
+{% extends 'site_base.html' %}
+{% load static %}
+{% block title %}Photos - {{recipe.title|truncatechars:20}}{% endblock %}
+
+{% block sitecontent %}
+<p class='mb-0'>
+  <h1>{{recipe.title}}</h1>
+  {% if mult_photos %}
+  <div id="recipePhotoCarousel" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
+    <div class="carousel-inner">
+      {% for photo in photos %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <img src="{{photo.photo.url}}" class="d-block w-100" data-photo-pk="{{photo.pk}}" alt="Recipe Image {{forloop.counter}}">
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#recipePhotoCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#recipePhotoCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  {% else %}
+  <img src="{{photos.0.photo.url}}" class="d-block w-100" alt="Recipe Image">
+  {% endif %}
+  <div class="mt-2">
+    <a id="rotate-left" href="{% url 'recipe_journal:rotate_left' photos.0.pk %}" class="btn btn-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+        <use href="{% static 'site_icons.svg' %}#icon-arrow-counterclockwise"></use>
+      </svg>
+    </a>
+    <a id="rotate-right" href="{% url 'recipe_journal:rotate_right' photos.0.pk %}" class="btn btn-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+        <use href="{% static 'site_icons.svg' %}#icon-arrow-clockwise"></use>
+      </svg>
+    </a>
+  </div>
+
+</p>
+{% endblock %}
+
+{% block scripts %}
+{% if mult_photos %}
+<script>
+  document.getElementById("recipePhotoCarousel").addEventListener('slide.bs.carousel', (event) => {
+    let photoPk = event.relatedTarget.querySelector("img").dataset["photoPk"];
+    document.getElementById("rotate-left").href = `/recipe-journal/photo/${photoPk}/rotate-left/`;
+    document.getElementById("rotate-right").href = `/recipe-journal/photo/${photoPk}/rotate-right/`;
+  })
+</script>
+{% endif %}
+{% endblock %}
