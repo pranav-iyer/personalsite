@@ -1,5 +1,14 @@
 {% extends 'site_base.html' %}
 {% load static %}
+{% load compress %}
+
+{% block headscripts %}
+{% compress js %}
+<script src="{% static 'highlight-js/highlight.min.js' %}"></script>
+<script src="{% static 'highlight-js/languages/python.min.js' %}"></script>
+{% endcompress %}
+{% endblock %}
+
 {% block title %}Drafts - Blog{% endblock %}
 
 {% block sitecontent %}
