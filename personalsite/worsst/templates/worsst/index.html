@@ -1,0 +1,36 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}woRSSt{% endblock %}
+
+{% block sitecontent %}
+<h1>RSS Feeds</h1>
+<div class="list-group">
+  {% for entry in entries %}
+  <div class="d-flex list-group-item pb-4">
+    <div class="rounded me-3" style="overflow: hidden; flex-shrink: 0;">
+      <a target="_blank" href="{{entry.link}}">
+        {% if entry.entryimage_set.first.href %}
+        <img style="height:6rem; width: 10rem;object-fit: cover;" src="{{entry.entryimage_set.first.href}}" />
+        {% else %}
+        <img style="height:6rem; width: 10rem;object-fit: cover;" src="{% static 'worsst/rss_default.png' %}" />
+        {% endif %}
+      </a>
+    </div>
+    <div>
+      <h4><a target="_blank" class="link-dark" href="{{entry.link}}">{{entry.title}}</a></h4>
+      <div>
+        <strong>{{entry.feed.name}}</strong>
+        {% if entry.author %}&middot; {{entry.author}}{% endif %} |
+        {% if entry.published %}{{entry.published|date:"m/d/Y, P"}}
+        {% else %}{{entry.updated|date:"m/d/Y, P"}}
+        {% endif %}
+      </div>
+      <span class="text-muted">
+        {{entry.description|striptags|truncatechars:150}}
+      </span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

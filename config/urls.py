@@ -13,29 +13,34 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import TemplateView
-from django.contrib.auth import views as auth_views
-from rest_framework.authtoken import views as authtoken_views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.urls import include, path
+from django.views.generic import TemplateView
+from rest_framework.authtoken import views as authtoken_views
 
-urlpatterns = [
-    path("", include("public.urls")),
-    path("dash/", include("dashboard.urls")),
-    path("gman/", include("groceries.urls")),
-    path("rman/", include("reminders.urls")),
-    path("yesman/", include("yesman.urls")),
-    path("search/", include("searches.urls")),
-    path("ktc/", include("kateycareer.urls")),
-    path("pixelart/", include("pixelart.urls")),
-    path("recipe-journal/", include("recipe_journal.urls")),
-    path("blog/", include("blog.urls")),
-    path("ingman/", include("ingman.urls")),
-    path("budget/", include("budget.urls")),
-    path("pcal/", include("pcal.urls")),
-    path("api-token-auth/", authtoken_views.obtain_auth_token),
-    path("admin/", admin.site.urls),
-]
-# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = (
+    [
+        path("", include("public.urls")),
+        path("dash/", include("dashboard.urls")),
+        path("gman/", include("groceries.urls")),
+        path("rman/", include("reminders.urls")),
+        path("yesman/", include("yesman.urls")),
+        path("search/", include("searches.urls")),
+        path("ktc/", include("kateycareer.urls")),
+        path("pixelart/", include("pixelart.urls")),
+        path("recipe-journal/", include("recipe_journal.urls")),
+        path("blog/", include("blog.urls")),
+        path("ingman/", include("ingman.urls")),
+        path("budget/", include("budget.urls")),
+        path("pcal/", include("pcal.urls")),
+        path("worsst/", include("worsst.urls")),
+        path("api-token-auth/", authtoken_views.obtain_auth_token),
+        path("admin/", admin.site.urls),
+        # ]
+    ]
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+)
