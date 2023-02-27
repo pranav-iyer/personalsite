@@ -1,0 +1,17 @@
+{% extends 'site_base.html' %}
+{% block sitecontent %}
+<p class='mb-0'>
+    What did you learn today?
+</p>
+<form class='mb-2' action="" method="post" style='max-width: 40rem;'>
+    {% csrf_token %}
+    {{ form.description }}
+    <input class='btn btn-primary' type='submit' value='Save'>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById("{{form.description.id_for_label}}").classList.add('form-control', 'mb-2')
+</script>
+{% endblock %}

@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
 import sys
-from dotenv import dotenv_values
+from pathlib import Path
+
 from django.contrib import messages
+from dotenv import dotenv_values
 
 env_config = dotenv_values("config/.env")
 
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     "budget",
     "pcal",
     "django_celery_beat",
+    "til",
 ]
 
 MIDDLEWARE = [

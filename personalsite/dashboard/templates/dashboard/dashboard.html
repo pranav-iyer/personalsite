@@ -59,6 +59,8 @@
                     src="{% static 'icons/calendar3.png' %}" /></a>
             <a href="{% url 'public:fav_chars' %}"><img class="popout-button dash-manager-icon"
                     src="{% static 'icons/keyboard-fill.png' %}" /></a>
+            <a href="{% url 'til:index' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/question-squiggly.png' %}" /></a>
         </div>
         <div class="p-2 dash-block" id="dash-block-tasks">
             <form action="{% url 'yesman:create' %}" method="post">

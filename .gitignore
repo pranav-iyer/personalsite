@@ -1,3 +1,4 @@
+pyrightconfig.json
 .vscode
 .DS_Store
 mail/scheduled_jobs/*
