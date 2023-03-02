@@ -3,6 +3,15 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% block headscripts %}
+<link
+  rel="search"
+  type="application/opensearchdescription+xml"
+  title="Pranav Iyer Search"
+  href="/static/opensearch_description.xml" 
+/>
+{% endblock headscripts %}
+
 {% block sitecontent %}
 <div class="d-flex justify-content-between">
     <div class='dash-blocks-container mx-auto'>
