@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('groceries', '0002_glist_is_active'),
+        ("groceries", "0002_glist_is_active"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='glist',
-            name='is_active',
+            model_name="glist",
+            name="is_active",
         ),
         migrations.AddField(
-            model_name='glistitem',
-            name='gotten',
+            model_name="glistitem",
+            name="gotten",
             field=models.BooleanField(default=True),
         ),
     ]

@@ -2,14 +2,15 @@ from secrets import choice
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+
 # Create your models here.
 class IngredientType(models.Model):
     class Category(models.TextChoices):
-        PRODUCE = 'PR'
+        PRODUCE = "PR"
         BAKERY = "BK"
         MEAT = "MT"
         PREPARED_FOODS = "PF"
-        DAIRY = 'DA'
+        DAIRY = "DA"
         PANTRY = "PA"
         FRIDGE = "RF"
         FROZEN = "FR"
@@ -22,10 +23,11 @@ class IngredientType(models.Model):
     def __str__(self):
         return self.name
 
+
 class IngInstance(models.Model):
     class Location(models.TextChoices):
-        KATEYS_APT = 'KT', _("Katey's Apartment (4225 Baltimore)")
-        PRANAVS_APT = 'PR', _("Pranav's Apartment (913 Ridge)")
+        KATEYS_APT = "KT", _("Katey's Apartment (4225 Baltimore)")
+        PRANAVS_APT = "PR", _("Pranav's Apartment (913 Ridge)")
 
     ing_type = models.ForeignKey(IngredientType, on_delete=models.CASCADE)
     exists = models.BooleanField()

@@ -5,31 +5,76 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='IngredientType',
+            name="IngredientType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('category', models.CharField(choices=[('PR', 'Produce'), ('DA', 'Dairy'), ('ME', 'Meat'), ('BR', 'Bread'), ('FR', 'Frozen'), ('BU', 'Bulk'), ('PA', 'Pantry'), ('HO', 'Household'), ('PF', 'Prepared Foods')], max_length=2)),
-                ('shelf_life', models.DurationField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("PR", "Produce"),
+                            ("DA", "Dairy"),
+                            ("ME", "Meat"),
+                            ("BR", "Bread"),
+                            ("FR", "Frozen"),
+                            ("BU", "Bulk"),
+                            ("PA", "Pantry"),
+                            ("HO", "Household"),
+                            ("PF", "Prepared Foods"),
+                        ],
+                        max_length=2,
+                    ),
+                ),
+                ("shelf_life", models.DurationField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='IngInstance',
+            name="IngInstance",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_active', models.BooleanField()),
-                ('quantity', models.CharField(max_length=200)),
-                ('location', models.CharField(choices=[('KT', "Katey's Apartment (4225 Baltimore)"), ('PR', "Pranav's Apartment (913 Ridge)")], max_length=2)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('ing_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ingman.ingredienttype')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_active", models.BooleanField()),
+                ("quantity", models.CharField(max_length=200)),
+                (
+                    "location",
+                    models.CharField(
+                        choices=[
+                            ("KT", "Katey's Apartment (4225 Baltimore)"),
+                            ("PR", "Pranav's Apartment (913 Ridge)"),
+                        ],
+                        max_length=2,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "ing_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="ingman.ingredienttype",
+                    ),
+                ),
             ],
         ),
     ]

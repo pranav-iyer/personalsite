@@ -24,7 +24,6 @@ EMAIL_LOOKUP = {
 
 
 def process_job(job_id: str):
-
     filename = here_dir / "scheduled_emails" / f"email_{job_id}.txt"
     if not os.path.isfile(filename):
         raise SystemExit(1)
@@ -38,7 +37,6 @@ def process_job(job_id: str):
 
 
 def send_gmail(to_addr: str, subject: str, message: str):
-
     gmail_address = os.getenv("FROM_EMAIL")
     gmail_passwd = os.getenv("FROM_EMAIL_PASSWD")
     smtp = "smtp.gmail.com"

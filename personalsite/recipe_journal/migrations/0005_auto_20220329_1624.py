@@ -4,19 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('recipe_journal', '0004_remove_recipe_photo_or_url'),
+        ("recipe_journal", "0004_remove_recipe_photo_or_url"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='recipe',
-            name='photo',
-            field=models.ImageField(blank=True, default=None, null=True, upload_to='recipe_journal/recipe_images/'),
+            model_name="recipe",
+            name="photo",
+            field=models.ImageField(
+                blank=True,
+                default=None,
+                null=True,
+                upload_to="recipe_journal/recipe_images/",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='recipe',
-            constraint=models.CheckConstraint(check=models.Q(models.Q(('photo__isnull', False), ('url__isnull', True)), models.Q(('photo__isnull', True), ('url__isnull', False)), _connector='OR'), name='photo_or_url'),
+            model_name="recipe",
+            constraint=models.CheckConstraint(
+                check=models.Q(
+                    models.Q(("photo__isnull", False), ("url__isnull", True)),
+                    models.Q(("photo__isnull", True), ("url__isnull", False)),
+                    _connector="OR",
+                ),
+                name="photo_or_url",
+            ),
         ),
     ]

@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('groceries', '0006_alter_glistitem_options'),
+        ("groceries", "0006_alter_glistitem_options"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='glistitem',
+            name="glistitem",
             options={},
         ),
     ]

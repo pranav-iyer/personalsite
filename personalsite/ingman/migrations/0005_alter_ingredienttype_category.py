@@ -4,15 +4,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('ingman', '0004_alter_ingredienttype_category'),
+        ("ingman", "0004_alter_ingredienttype_category"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ingredienttype',
-            name='category',
-            field=models.CharField(choices=[('PR', 'Produce'), ('BK', 'Bakery'), ('MT', 'Meat'), ('PF', 'Prepared Foods'), ('DA', 'Dairy'), ('PA', 'Pantry'), ('RF', 'Fridge'), ('FR', 'Frozen'), ('HO', 'Household')], max_length=2),
+            model_name="ingredienttype",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("PR", "Produce"),
+                    ("BK", "Bakery"),
+                    ("MT", "Meat"),
+                    ("PF", "Prepared Foods"),
+                    ("DA", "Dairy"),
+                    ("PA", "Pantry"),
+                    ("RF", "Fridge"),
+                    ("FR", "Frozen"),
+                    ("HO", "Household"),
+                ],
+                max_length=2,
+            ),
         ),
     ]

@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from .models import CareerInfo
 from django.views.generic import CreateView
 
+
 # Create your views here.
 def index_view(request):
     return HttpResponse("hello!")

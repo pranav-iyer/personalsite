@@ -1,6 +1,8 @@
 from django import template
 from django.template.defaultfilters import stringfilter
+
 register = template.Library()
+
 
 @register.filter
 @stringfilter
@@ -14,20 +16,20 @@ def shorten_date(value):
     #     else:
     #         unit = value[i+1]
     #         break
-        
+
     words = value.split()
     number = words[0]
-    if words[1].startswith('minute'):
-        unit = 'm'
-    elif words[1].startswith('hour'):
-        unit = 'h'
-    elif words[1].startswith('day'):
-        unit = 'd'
-    elif words[1].startswith('month'):
-        unit = 'mo'
-    elif words[1].startswith('year'):
-        unit = 'y'
+    if words[1].startswith("minute"):
+        unit = "m"
+    elif words[1].startswith("hour"):
+        unit = "h"
+    elif words[1].startswith("day"):
+        unit = "d"
+    elif words[1].startswith("month"):
+        unit = "mo"
+    elif words[1].startswith("year"):
+        unit = "y"
     else:
-        unit = ''
+        unit = ""
 
-    return number+unit
+    return number + unit

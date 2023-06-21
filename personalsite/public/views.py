@@ -62,6 +62,7 @@ FAV_CHARS = [
     "⇝",
 ]
 
+
 # Create your views here.
 def fav_chars(request):
     context = {}

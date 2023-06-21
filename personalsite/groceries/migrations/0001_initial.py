@@ -5,70 +5,159 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='GList',
+            name="GList",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=300)),
-                ('created', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=300)),
+                ("created", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'verbose_name': 'grocery list',
-                'verbose_name_plural': 'grocery lists',
+                "verbose_name": "grocery list",
+                "verbose_name_plural": "grocery lists",
             },
         ),
         migrations.CreateModel(
-            name='Item',
+            name="Item",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=300)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=300)),
             ],
         ),
         migrations.CreateModel(
-            name='Store',
+            name="Store",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=300)),
-                ('address', models.CharField(max_length=300)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=300)),
+                ("address", models.CharField(max_length=300)),
             ],
         ),
         migrations.CreateModel(
-            name='GListItem',
+            name="GListItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order_in_list', models.IntegerField()),
-                ('glist', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='groceries.glist')),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='groceries.item')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("order_in_list", models.IntegerField()),
+                (
+                    "glist",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="groceries.glist",
+                    ),
+                ),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="groceries.item"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='glist',
-            name='groceries',
-            field=models.ManyToManyField(blank=True, related_name='lists', through='groceries.GListItem', to='groceries.Item'),
+            model_name="glist",
+            name="groceries",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="lists",
+                through="groceries.GListItem",
+                to="groceries.Item",
+            ),
         ),
         migrations.CreateModel(
-            name='AisleLocation',
+            name="AisleLocation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('aisle', models.CharField(max_length=300)),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='aisle_locations', to='groceries.item')),
-                ('store', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='aisle_locations', to='groceries.store')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("aisle", models.CharField(max_length=300)),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="aisle_locations",
+                        to="groceries.item",
+                    ),
+                ),
+                (
+                    "store",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="aisle_locations",
+                        to="groceries.store",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Trip',
+            name="Trip",
             fields=[
-                ('glist', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='groceries.glist')),
-                ('completed', models.DateTimeField(blank=True, null=True)),
-                ('store', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='groceries.store')),
-                ('unlisted_groceries', models.ManyToManyField(blank=True, related_name='unlisted_trips', to='groceries.Item')),
+                (
+                    "glist",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        primary_key=True,
+                        serialize=False,
+                        to="groceries.glist",
+                    ),
+                ),
+                ("completed", models.DateTimeField(blank=True, null=True)),
+                (
+                    "store",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="groceries.store",
+                    ),
+                ),
+                (
+                    "unlisted_groceries",
+                    models.ManyToManyField(
+                        blank=True, related_name="unlisted_trips", to="groceries.Item"
+                    ),
+                ),
             ],
         ),
     ]

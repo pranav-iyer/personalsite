@@ -15,6 +15,7 @@ from reminders.tasks import send_reminder_email, schedule_reminder_email
 from reminders.scheduling import TIMING_CHOICES, get_eta
 from .models import YesItem
 
+
 # Create your views here.
 class YesListActiveView(generic.ListView):
     model = YesItem

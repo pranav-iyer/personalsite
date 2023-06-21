@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pixelart', '0002_auto_20220106_1717'),
+        ("pixelart", "0002_auto_20220106_1717"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='savedata',
-            name='progress',
+            model_name="savedata",
+            name="progress",
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='savedata',
-            name='statuses',
+            model_name="savedata",
+            name="statuses",
             field=models.TextField(blank=True, null=True),
         ),
     ]

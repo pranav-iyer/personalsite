@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('ingman', '0001_initial'),
+        ("ingman", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='inginstance',
-            old_name='is_active',
-            new_name='exists',
+            model_name="inginstance",
+            old_name="is_active",
+            new_name="exists",
         ),
         migrations.AlterField(
-            model_name='inginstance',
-            name='created',
+            model_name="inginstance",
+            name="created",
             field=models.DateTimeField(),
         ),
     ]

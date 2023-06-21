@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('recipe_journal', '0003_auto_20220329_1546'),
+        ("recipe_journal", "0003_auto_20220329_1546"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='recipe',
-            name='photo_or_url',
+            model_name="recipe",
+            name="photo_or_url",
         ),
     ]

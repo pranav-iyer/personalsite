@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-'''
+"""
 class List
     title
     created
@@ -9,7 +9,8 @@ class List
     completed
     contents
     
-'''
+"""
+
 
 class GList(models.Model):
     title = models.CharField(max_length=300)
@@ -22,9 +23,8 @@ class GList(models.Model):
         return self.title
 
 
-
 ##################################################################################
-'''
+"""
 class Item(models.Model):
     name = models.CharField(max_length=300)
 
@@ -82,4 +82,4 @@ class AisleLocation(models.Model):
     def __str__(self):
         return self.item.name + ' - ' + self.store.name
 
-'''
+"""

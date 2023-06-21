@@ -4,52 +4,51 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('groceries', '0008_glist_updated'),
+        ("groceries", "0008_glist_updated"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='glist',
-            name='groceries',
+            model_name="glist",
+            name="groceries",
         ),
         migrations.RemoveField(
-            model_name='glistitem',
-            name='glist',
+            model_name="glistitem",
+            name="glist",
         ),
         migrations.RemoveField(
-            model_name='glistitem',
-            name='item',
+            model_name="glistitem",
+            name="item",
         ),
         migrations.RemoveField(
-            model_name='trip',
-            name='glist',
+            model_name="trip",
+            name="glist",
         ),
         migrations.RemoveField(
-            model_name='trip',
-            name='store',
+            model_name="trip",
+            name="store",
         ),
         migrations.RemoveField(
-            model_name='trip',
-            name='unlisted_groceries',
+            model_name="trip",
+            name="unlisted_groceries",
         ),
         migrations.DeleteModel(
-            name='AisleLocation',
+            name="AisleLocation",
         ),
         migrations.DeleteModel(
-            name='GList',
+            name="GList",
         ),
         migrations.DeleteModel(
-            name='GListItem',
+            name="GListItem",
         ),
         migrations.DeleteModel(
-            name='Item',
+            name="Item",
         ),
         migrations.DeleteModel(
-            name='Store',
+            name="Store",
         ),
         migrations.DeleteModel(
-            name='Trip',
+            name="Trip",
         ),
     ]

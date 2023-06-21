@@ -4,6 +4,7 @@ from django.utils.http import urlencode
 from .models import Search
 from django.contrib.auth.models import AnonymousUser
 
+
 # Create your views here.
 def log_search_view(request):
     if request.method == "GET":

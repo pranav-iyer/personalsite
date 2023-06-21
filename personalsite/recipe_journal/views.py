@@ -9,6 +9,7 @@ from .models import Recipe, RecipeJournalEntry, RecipePhoto
 from .forms import RecipeForm, RecipeJournalEntryForm
 from PIL import Image, ExifTags
 
+
 # Create your views here.
 def index_view(request):
     context = {"recipes": Recipe.objects.all()}

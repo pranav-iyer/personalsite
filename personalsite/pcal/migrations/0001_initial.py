@@ -6,65 +6,180 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='DateRange',
+            name="DateRange",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
             ],
         ),
         migrations.CreateModel(
-            name='IntervalSchedule',
+            name="IntervalSchedule",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('every', models.IntegerField(validators=[django.core.validators.MinValueValidator(1)])),
-                ('unit', models.CharField(choices=[('days', 'Days'), ('weeks', 'Weeks'), ('months', 'Months'), ('years', 'Years')], max_length=6)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "every",
+                    models.IntegerField(
+                        validators=[django.core.validators.MinValueValidator(1)]
+                    ),
+                ),
+                (
+                    "unit",
+                    models.CharField(
+                        choices=[
+                            ("days", "Days"),
+                            ("weeks", "Weeks"),
+                            ("months", "Months"),
+                            ("years", "Years"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='TimeRange',
+            name="TimeRange",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('start_time', models.TimeField()),
-                ('end_time', models.TimeField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField()),
+                ("start_time", models.TimeField()),
+                ("end_time", models.TimeField()),
             ],
         ),
         migrations.CreateModel(
-            name='WeekdaySchedule',
+            name="WeekdaySchedule",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('every', models.IntegerField(validators=[django.core.validators.MinValueValidator(1)])),
-                ('weekdays', models.CharField(max_length=7, validators=[django.core.validators.RegexValidator('^(0|1){7}$')])),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "every",
+                    models.IntegerField(
+                        validators=[django.core.validators.MinValueValidator(1)]
+                    ),
+                ),
+                (
+                    "weekdays",
+                    models.CharField(
+                        max_length=7,
+                        validators=[
+                            django.core.validators.RegexValidator("^(0|1){7}$")
+                        ],
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='RecurrenceData',
+            name="RecurrenceData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('interval_schedule', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='pcal.intervalschedule')),
-                ('weekday_schedule', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='pcal.weekdayschedule')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField(blank=True, null=True)),
+                (
+                    "interval_schedule",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="pcal.intervalschedule",
+                    ),
+                ),
+                (
+                    "weekday_schedule",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="pcal.weekdayschedule",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=300)),
-                ('description', models.TextField(blank=True)),
-                ('date_range', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='pcal.daterange')),
-                ('recurrence_data', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='pcal.recurrencedata')),
-                ('time_range', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='pcal.timerange')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=300)),
+                ("description", models.TextField(blank=True)),
+                (
+                    "date_range",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="pcal.daterange",
+                    ),
+                ),
+                (
+                    "recurrence_data",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="pcal.recurrencedata",
+                    ),
+                ),
+                (
+                    "time_range",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="pcal.timerange",
+                    ),
+                ),
             ],
         ),
     ]

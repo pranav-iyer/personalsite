@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pixelart', '0003_auto_20220106_2120'),
+        ("pixelart", "0003_auto_20220106_2120"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='artpiece',
-            name='filled_thumbnail',
-            field=models.ImageField(blank=True, null=True, upload_to='pixart/thumbnails_filled/'),
+            model_name="artpiece",
+            name="filled_thumbnail",
+            field=models.ImageField(
+                blank=True, null=True, upload_to="pixart/thumbnails_filled/"
+            ),
         ),
     ]

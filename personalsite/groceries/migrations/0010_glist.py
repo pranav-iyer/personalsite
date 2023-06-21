@@ -4,23 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('groceries', '0009_auto_20220916_2158'),
+        ("groceries", "0009_auto_20220916_2158"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GList',
+            name="GList",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=300)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('completed', models.DateTimeField(blank=True, null=True)),
-                ('contents', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=300)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("completed", models.DateTimeField(blank=True, null=True)),
+                ("contents", models.TextField()),
             ],
         ),
     ]

@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,23 +14,56 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='ArtPiece',
+            name="ArtPiece",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('pixart', models.FileField(upload_to='pixart/pixart/')),
-                ('thumbnail', models.ImageField(blank=True, null=True, upload_to='pixart/thumbnails/')),
-                ('title', models.CharField(max_length=200)),
-                ('slug', models.SlugField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("pixart", models.FileField(upload_to="pixart/pixart/")),
+                (
+                    "thumbnail",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="pixart/thumbnails/"
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("slug", models.SlugField()),
             ],
         ),
         migrations.CreateModel(
-            name='SaveData',
+            name="SaveData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('statuses', models.TextField()),
-                ('progress', models.FloatField()),
-                ('art_piece', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pixelart.artpiece')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("statuses", models.TextField()),
+                ("progress", models.FloatField()),
+                (
+                    "art_piece",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="pixelart.artpiece",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

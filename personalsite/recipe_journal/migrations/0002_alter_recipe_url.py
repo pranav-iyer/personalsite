@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('recipe_journal', '0001_initial'),
+        ("recipe_journal", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='recipe',
-            name='url',
-            field=models.URLField(default='', max_length=300),
+            model_name="recipe",
+            name="url",
+            field=models.URLField(default="", max_length=300),
             preserve_default=False,
         ),
     ]

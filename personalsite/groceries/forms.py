@@ -3,10 +3,11 @@ from django.forms import widgets
 
 from .models import GList
 
+
 class GListForm(forms.ModelForm):
     class Meta:
         model = GList
-        fields = ['title', 'contents']
+        fields = ["title", "contents"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

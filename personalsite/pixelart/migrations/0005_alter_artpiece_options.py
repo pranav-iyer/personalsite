@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pixelart', '0004_artpiece_filled_thumbnail'),
+        ("pixelart", "0004_artpiece_filled_thumbnail"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='artpiece',
-            options={'ordering': ['-created']},
+            name="artpiece",
+            options={"ordering": ["-created"]},
         ),
     ]

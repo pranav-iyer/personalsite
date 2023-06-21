@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('groceries', '0005_alter_trip_glist'),
+        ("groceries", "0005_alter_trip_glist"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='glistitem',
-            options={'ordering': ['order_in_list']},
+            name="glistitem",
+            options={"ordering": ["order_in_list"]},
         ),
     ]

@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class YesItem(models.Model):
     info = models.CharField(max_length=300, null=False, blank=False)

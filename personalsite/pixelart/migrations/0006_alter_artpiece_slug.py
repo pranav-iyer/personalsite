@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pixelart', '0005_alter_artpiece_options'),
+        ("pixelart", "0005_alter_artpiece_options"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='artpiece',
-            name='slug',
+            model_name="artpiece",
+            name="slug",
             field=models.SlugField(unique=True),
         ),
     ]

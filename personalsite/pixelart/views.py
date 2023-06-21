@@ -12,6 +12,7 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from zipfile import ZipFile
 import json
 
+
 # Create your views here.
 def image_download_view(request, slug):
     ap = get_object_or_404(ArtPiece, slug=slug)

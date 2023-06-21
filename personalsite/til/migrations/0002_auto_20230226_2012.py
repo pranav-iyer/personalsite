@@ -5,20 +5,21 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('til', '0001_initial'),
+        ("til", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='tidbit',
-            name='date',
+            model_name="tidbit",
+            name="date",
         ),
         migrations.AddField(
-            model_name='tidbit',
-            name='created',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="tidbit",
+            name="created",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
     ]

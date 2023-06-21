@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('budget', '0003_alter_budgetlimit_edited_category'),
+        ("budget", "0003_alter_budgetlimit_edited_category"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='BudgetLimit',
-            new_name='MonthlyLimit',
+            old_name="BudgetLimit",
+            new_name="MonthlyLimit",
         ),
     ]

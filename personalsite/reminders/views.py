@@ -6,6 +6,7 @@ from django.utils import timezone
 from .tasks import send_reminder_email, schedule_reminder_email
 from .scheduling import TIMING_CHOICES, get_eta
 
+
 # Create your views here.
 def create_reminder_view(request):
     if request.method == "POST":
