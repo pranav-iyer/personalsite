@@ -150,7 +150,13 @@ LOGIN_URL = "public:login"
 LOGIN_REDIRECT_URL = "dashboard:login_redirect"
 LOGOUT_REDIRECT_URL = "public:index"
 # can manually add in URLs here that should be outside of the login wall
-OPEN_URLS = ["/search/shortcut/", "/pixelart/demo/", "blog:list", "blog:post"]
+OPEN_URLS = [
+    "/search/shortcut/",
+    "/pixelart/demo/",
+    "/yesman/api/",
+    "blog:list",
+    "blog:post",
+]
 OPEN_APPS = ["public"]
 
 # apps and urls that are open to regular users. everything else is by default only open to staff users

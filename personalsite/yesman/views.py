@@ -1,7 +1,3 @@
-from asyncio import format_helpers
-from datetime import timedelta
-
-import pytz
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
@@ -10,8 +6,8 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.html import format_html
 from django.views import generic
-from reminders.scheduling import TIMING_CHOICES, get_eta
-from reminders.tasks import schedule_reminder_email, send_reminder_email
+from reminders.scheduling import get_eta
+from reminders.tasks import schedule_reminder_email
 
 from .models import YesItem
 

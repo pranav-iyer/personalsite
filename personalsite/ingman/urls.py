@@ -1,7 +1,3 @@
-from dataclasses import field
-from re import L
-from syslog import LOG_UUCP
-
 from django.urls import include, path
 from django_filters import rest_framework as filters
 from rest_framework import filters as rf_filters

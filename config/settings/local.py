@@ -23,7 +23,14 @@ DATABASES = {
 }
 
 
-REST_FRAMEWORK = {}
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # 'rest_framework.authentication.TokenAuthentication',
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+}
 
 STATIC_ROOT = env_config["LOCAL_STATIC_ROOT"]
 MEDIA_ROOT = env_config["LOCAL_MEDIA_ROOT"]
