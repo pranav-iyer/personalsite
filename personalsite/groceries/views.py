@@ -1,16 +1,17 @@
 from curses.ascii import HT
-from django.http import Http404
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView
-from django.db.models import Value as V
-from django.db.models.functions import Chr, Length, Trim, Replace
-from django.utils import timezone
-from django.contrib import messages
-from django.utils.html import format_html
 
+from django.contrib import messages
+from django.db.models import Value as V
+from django.db.models.functions import Chr, Length, Replace, Trim
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.utils.html import format_html
+from django.views.generic import ListView
 from yesman.views import truncatechars
-from .models import GList
+
 from .forms import GListForm
+from .models import GList
 
 
 class GListListView(ListView):

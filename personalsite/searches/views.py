@@ -1,8 +1,9 @@
+from django.contrib.auth.models import AnonymousUser
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils.http import urlencode
+
 from .models import Search
-from django.contrib.auth.models import AnonymousUser
 
 
 # Create your views here.

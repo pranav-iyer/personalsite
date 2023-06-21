@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
-from django import forms
-from django.core.mail import EmailMultiAlternatives
 import unicodedata as ud
+
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import redirect, render
 
 FAV_CHARS = [
     "⌂",

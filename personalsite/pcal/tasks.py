@@ -1,9 +1,11 @@
 import calendar
-from datetime import date, timedelta, datetime
 import re
+from datetime import date, datetime, timedelta
+
 from celery import shared_task
-from .models import RecurrenceData
 from django.utils import timezone
+
+from .models import RecurrenceData
 from .views import check_event_exists, create_event_instance
 
 

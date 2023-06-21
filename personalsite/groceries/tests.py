@@ -1,5 +1,5 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test import TestCase
 from groceries.models import GList
 
 # ALTER USER django CREATEDB; === comment to make user able to run tests

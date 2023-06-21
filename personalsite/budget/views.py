@@ -1,20 +1,21 @@
+import base64
+import calendar
 import csv
+import random
+import re
 from datetime import datetime
 from decimal import Decimal
 from io import StringIO
-import random
-import re
 from typing import Any, Dict
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.http import Http404
-from django.forms.models import model_to_dict
+
 from django.db.models import Sum
-import base64
-import calendar
+from django.forms.models import model_to_dict
+from django.http import Http404
+from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from .forms import CSVDropForm, CSVDropSaveForm, TransactionReportForm
-from .models import CATEGORIES_REVERSE, Transaction, CATEGORIES, MonthlyLimit
+from .models import CATEGORIES, CATEGORIES_REVERSE, MonthlyLimit, Transaction
 
 # Create your views here.
 SOURCE_CATEGORIES = [

@@ -1,8 +1,9 @@
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from .models import CareerInfo
 from django.views.generic import CreateView
+
+from .models import CareerInfo
 
 
 # Create your views here.

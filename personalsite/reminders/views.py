@@ -1,10 +1,9 @@
-from django.shortcuts import redirect, render
 from django import forms
-
+from django.shortcuts import redirect, render
 from django.utils import timezone
 
-from .tasks import send_reminder_email, schedule_reminder_email
 from .scheduling import TIMING_CHOICES, get_eta
+from .tasks import schedule_reminder_email, send_reminder_email
 
 
 # Create your views here.

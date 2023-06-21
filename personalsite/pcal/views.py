@@ -1,20 +1,16 @@
-from datetime import datetime, timedelta, time, date
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.http import Http404
-from django.db.models import F, Q
-from django.utils import timezone
 import calendar
 import re
-from .models import (
-    DateRange,
-    Event,
-    IntervalSchedule,
-    RecurrenceData,
-    TimeRange,
-    WeekdaySchedule,
-)
+from datetime import date, datetime, time, timedelta
+
+from django.db.models import F, Q
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
+
 from .forms import AddEventForm
+from .models import (DateRange, Event, IntervalSchedule, RecurrenceData,
+                     TimeRange, WeekdaySchedule)
 
 
 def to_twelve_hour(hour):

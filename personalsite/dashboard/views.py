@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
-from django.db.models.functions import Length, Replace, Trim, Chr
+from django.contrib import messages
+from django.db.models.functions import Chr, Length, Replace, Trim
+from django.shortcuts import redirect, render
+from django.utils.html import format_html
+from groceries.models import GList
 from reminders.scheduling import TIMING_CHOICES
 from yesman.models import YesItem
-from groceries.models import GList
-from django.contrib import messages
-from django.utils.html import format_html
 
 # Create your views here.
 NUM_YESES_TO_SHOW = 7

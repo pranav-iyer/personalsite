@@ -1,13 +1,15 @@
 import io
 import os
+
+from django.core.files import File
+from django.core.files.images import ImageFile
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.core.files.images import ImageFile
-from django.core.files import File
 from django.views.decorators.cache import never_cache
-from .models import Recipe, RecipeJournalEntry, RecipePhoto
+from PIL import ExifTags, Image
+
 from .forms import RecipeForm, RecipeJournalEntryForm
-from PIL import Image, ExifTags
+from .models import Recipe, RecipeJournalEntry, RecipePhoto
 
 
 # Create your views here.

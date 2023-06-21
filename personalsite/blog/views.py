@@ -1,15 +1,17 @@
 import re
-from django import forms
-from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse
-from django.views.generic import ListView
-from django.utils.html import escape
-from django.http import Http404
-from django.views.decorators.http import require_POST
-from .models import BlogImage, BlogPost
+
 import markdown
-from markdown.extensions import Extension
 from bs4 import BeautifulSoup
+from django import forms
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.html import escape
+from django.views.decorators.http import require_POST
+from django.views.generic import ListView
+from markdown.extensions import Extension
+
+from .models import BlogImage, BlogPost
 
 
 class EscapeHtml(Extension):

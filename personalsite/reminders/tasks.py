@@ -1,8 +1,9 @@
-from django.core.mail import EmailMessage
+import json
+
 from celery import shared_task
 from django.conf import settings
-from django_celery_beat.models import PeriodicTask, ClockedSchedule
-import json
+from django.core.mail import EmailMessage
+from django_celery_beat.models import ClockedSchedule, PeriodicTask
 
 
 def schedule_reminder_email(name_for, message, clock_time):

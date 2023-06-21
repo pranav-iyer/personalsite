@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import GList
 
 # Register your models here.

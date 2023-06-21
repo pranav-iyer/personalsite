@@ -1,12 +1,7 @@
 from django.contrib import admin
-from .models import (
-    Event,
-    RecurrenceData,
-    WeekdaySchedule,
-    IntervalSchedule,
-    DateRange,
-    TimeRange,
-)
+
+from .models import (DateRange, Event, IntervalSchedule, RecurrenceData,
+                     TimeRange, WeekdaySchedule)
 
 # Register your models here.
 admin.site.register(Event)

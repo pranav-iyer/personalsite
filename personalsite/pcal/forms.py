@@ -1,6 +1,6 @@
 from django import forms
-from .models import INTERVAL_UNIT_CHOICES
 
+from .models import INTERVAL_UNIT_CHOICES
 
 WEEKDAY_EVERY_CHOICES = [
     (1, "single"),

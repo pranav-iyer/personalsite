@@ -1,5 +1,5 @@
-from django.core.mail import EmailMessage
 from django.conf import settings
+from django.core.mail import EmailMessage
 
 
 def notify_on_login(sender, **kwargs):

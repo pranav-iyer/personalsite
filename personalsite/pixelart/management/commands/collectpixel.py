@@ -1,12 +1,13 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
-from django.core.files import File
-from django.db.utils import IntegrityError
-from pixelart.models import ArtPiece
-from typing import Any, Optional
+import json
 import os
 import shutil
-import json
+from typing import Any, Optional
+
+from django.conf import settings
+from django.core.files import File
+from django.core.management.base import BaseCommand, CommandError
+from django.db.utils import IntegrityError
+from pixelart.models import ArtPiece
 
 
 class Command(BaseCommand):

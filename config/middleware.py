@@ -1,6 +1,7 @@
 from multiprocessing import allow_connection_pickling
-from django.shortcuts import redirect
+
 from django.conf import settings
+from django.shortcuts import redirect
 from django.urls import resolve, reverse
 from django.urls.conf import path
 

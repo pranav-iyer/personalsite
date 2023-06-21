@@ -1,14 +1,13 @@
+import os
 import smtplib
-
+import sys
+# from email.mime.base import MIMEBase
+# from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 # from email import encoders
 # from email.header import Header
 from email.mime.text import MIMEText
 
-# from email.mime.base import MIMEBase
-# from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
-
-import os, sys
 from dotenv import load_dotenv
 
 load_dotenv()

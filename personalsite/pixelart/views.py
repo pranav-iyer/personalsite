@@ -1,16 +1,18 @@
+import json
+from zipfile import ZipFile
+
+from django import forms
+from django.core.files import File
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.db.utils import IntegrityError
 from django.http import FileResponse, JsonResponse
 from django.http.response import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import ListView
-from django import forms
-from .models import ArtPiece, SaveData
-from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
-from django.db.utils import IntegrityError
-from django.core.files import File
-from django.core.mail import EmailMessage, EmailMultiAlternatives
-from zipfile import ZipFile
-import json
+from django.views.decorators.cache import never_cache
+from django.views.generic import ListView
+
+from .models import ArtPiece, SaveData
 
 
 # Create your views here.

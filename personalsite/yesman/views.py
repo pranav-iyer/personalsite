@@ -1,18 +1,18 @@
 from asyncio import format_helpers
-from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
-from django.views import generic
-from django.utils import timezone
-from django.utils.html import format_html
-from django.urls import reverse_lazy
-import pytz
 from datetime import timedelta
 
-from django.contrib import messages
+import pytz
 from django.conf import settings
-
-from reminders.tasks import send_reminder_email, schedule_reminder_email
+from django.contrib import messages
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.utils.html import format_html
+from django.views import generic
 from reminders.scheduling import TIMING_CHOICES, get_eta
+from reminders.tasks import schedule_reminder_email, send_reminder_email
+
 from .models import YesItem
 
 
