@@ -46,6 +46,10 @@ def send_telegram_message(message):
     )
     response = requests.post(
         send_message_url,
-        data={"chat_id": settings.TELEGRAM_USER_ID, "text": message},
+        data={
+            "chat_id": settings.TELEGRAM_USER_ID,
+            "text": message,
+            "parse_mode": "MarkdownV2",
+        },
     )
     print(response.json())
