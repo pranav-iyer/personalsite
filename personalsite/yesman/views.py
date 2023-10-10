@@ -64,7 +64,7 @@ def remind_yesitem(request, pk):
     #     args=("pranav", f"To-Do: {yesitem.info}"),
     #     eta=task_eta,
     # )
-    schedule_reminder_email("pranav", f"To-Do: {yesitem.info}", task_eta)
+    schedule_reminder_email("pranav", f"*TO-DO:* {yesitem.info}", task_eta)
 
     date_string = ""
     if task_eta.day == now.day:

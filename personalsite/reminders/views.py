@@ -21,7 +21,9 @@ def create_reminder_view(request):
             # )
 
             schedule_reminder_email(
-                form.cleaned_data["name_for"], form.cleaned_data["message"], task_eta
+                form.cleaned_data["name_for"],
+                "*REMINDER: *" + form.cleaned_data["message"],
+                task_eta,
             )
 
             return redirect("reminders:success")
