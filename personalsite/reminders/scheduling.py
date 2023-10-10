@@ -20,7 +20,7 @@ TIMING_CHOICES = [
 def get_eta(time_code, custom_time=None):
     """Computes the ETA for the task, based on the time code chosen
     from TIMING_CHOICES (above)."""
-    now = timezone.now().astimezone(pytz.timezone("US/Eastern"))
+    now = timezone.now().astimezone(pytz.timezone("Europe/Oslo"))
     if time_code == "half_hour":
         chosen_dt = now + timedelta(minutes=30)
     elif time_code == "one_hour":
