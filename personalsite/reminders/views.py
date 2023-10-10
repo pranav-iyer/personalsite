@@ -5,6 +5,8 @@ from django.utils import timezone
 from .scheduling import TIMING_CHOICES, get_eta
 from .tasks import schedule_reminder_email, send_reminder_email
 
+CHARS_TO_ESCAPE = ["[", "]", "!", "(", ")", ">", "#", "+", "-", "=", "{", "}"]
+
 
 # Create your views here.
 def create_reminder_view(request):
@@ -15,14 +17,12 @@ def create_reminder_view(request):
                 form.cleaned_data["reminder_time"], form.cleaned_data.get("custom_time")
             )
 
-            # send_reminder_email.apply_async(
-            #     args=(form.cleaned_data["name_for"], form.cleaned_data["message"]),
-            #     eta=task_eta,
-            # )
+            for c in CHARS_TO_ESCAPE:
+                message = form.cleaned_data["message"].replace(c, f"\\{c}")
 
             schedule_reminder_email(
                 form.cleaned_data["name_for"],
-                "*REMINDER: *" + form.cleaned_data["message"],
+                "*REMINDER: *" + message,
                 task_eta,
             )
 
