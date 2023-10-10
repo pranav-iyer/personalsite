@@ -13,8 +13,10 @@ def schedule_reminder_email(name_for, message, clock_time):
     task = PeriodicTask.objects.create(
         clocked=sched,
         name=f"Send Message [{message[:50]}] ({reminder_number})",
-        task="reminders.tasks.send_reminder_email",
-        args=json.dumps([name_for, message]),
+        # task="reminders.tasks.send_reminder_email",
+        # args=json.dumps([name_for, message]),
+        task="reminders.tasks.telegram_message_task",
+        args=json.dumps([message]),
         one_off=True,
     )
     return task
@@ -31,6 +33,11 @@ def send_reminder_email(name_for, message):
 
     email = EmailMessage("[pranaviyer.com] Reminder!!!", message, None, [to_addr])
     email.send()
+
+
+@shared_task()
+def telegram_message_task(message):
+    send_telegram_message(message)
 
 
 def send_telegram_message(message):
