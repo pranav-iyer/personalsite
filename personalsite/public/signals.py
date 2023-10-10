@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.mail import EmailMessage
+from reminders.tasks import send_telegram_message
 
 
 def notify_on_login(sender, **kwargs):
@@ -7,17 +7,11 @@ def notify_on_login(sender, **kwargs):
     request = kwargs.get("request")
     if user is not None and request is not None:
         header_string = ""
-        for key in request.headers:
-            header_string += f"\t{key}: {request.headers[key]}\n"
+        for key in ["User-Agent", "Host", "Referer", "Origin"]:
+            header_string += f"\t{key}: {request.headers.get(key, '-')}\n"
         message_body = f"User {user.username} ({user.first_name} {user.last_name}) just successfully logged in.\n\nDetails:\nIP Address - {request.META['REMOTE_ADDR']}\nHostname - {request.META['REMOTE_ADDR']}\nHeaders \n{header_string}"
         if not settings.DEBUG:
-            msg = EmailMessage(
-                "[pranaviyer.com] Security Alert",
-                message_body,
-                None,
-                [settings.PRANAV_MAIN_EMAIL],
-            )
-            msg.send()
+            send_telegram_message(message_body)
         else:
-            print("User logged in, sending email:")
+            print("User logged in, sending message:")
             print(message_body)

@@ -1,5 +1,6 @@
 import json
 
+import requests
 from celery import shared_task
 from django.conf import settings
 from django.core.mail import EmailMessage
@@ -30,3 +31,14 @@ def send_reminder_email(name_for, message):
 
     email = EmailMessage("[pranaviyer.com] Reminder!!!", message, None, [to_addr])
     email.send()
+
+
+def send_telegram_message(message):
+    send_message_url = (
+        f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_KEY}/sendMessage"
+    )
+    response = requests.post(
+        send_message_url,
+        data={"chat_id": settings.TELEGRAM_USER_ID, "text": message},
+    )
+    print(response.json())

@@ -189,3 +189,7 @@ MESSAGE_TAGS = {
     messages.ERROR: "bg-danger icon-exclamation-octagon-fill",
     CUSTOM_MESSAGE_LEVELS["ALERT"]: "bg-secondary icon-bell-fill",
 }
+
+# telegram settings
+TELEGRAM_BOT_KEY = env_config["TELEGRAM_BOT_KEY"]
+TELEGRAM_USER_ID = env_config["TELEGRAM_USER_ID"]
