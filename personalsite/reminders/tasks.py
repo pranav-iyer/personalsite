@@ -41,6 +41,7 @@ def telegram_message_task(message):
 
 
 def send_telegram_message(message):
+    print(f"Sending message {message!r}")
     send_message_url = (
         f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_KEY}/sendMessage"
     )
