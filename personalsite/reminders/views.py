@@ -17,8 +17,9 @@ def create_reminder_view(request):
                 form.cleaned_data["reminder_time"], form.cleaned_data.get("custom_time")
             )
 
+            message = form.cleaned_data["message"]
             for c in CHARS_TO_ESCAPE:
-                message = form.cleaned_data["message"].replace(c, f"\\{c}")
+                message = message.replace(c, f"\\{c}")
 
             schedule_reminder_email(
                 form.cleaned_data["name_for"],
