@@ -10,7 +10,7 @@ SESSION_COOKIE_SECURE = True
 
 SECRET_KEY = env_config.get("DJANGO_SECRET_KEY", "")
 
-ALLOWED_HOSTS = ["104.248.10.24", "localhost", "pranaviyer.com"]
+ALLOWED_HOSTS = ["167.99.213.197", "localhost", "pranaviyer.com"]
 
 DATABASES = {
     "default": {
