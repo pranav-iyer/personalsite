@@ -3,6 +3,7 @@ import unicodedata as ud
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import EmailMultiAlternatives
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
 FAV_CHARS = [
@@ -78,6 +79,10 @@ def fav_chars(request):
         for c in FAV_CHARS
     ]
     return render(request, "public/fav_chars.html", context)
+
+
+def ip_echo(request):
+    return HttpResponse(request.META.get("REMOTE_ADDR", ""))
 
 
 def request_account(request):

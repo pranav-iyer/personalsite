@@ -19,4 +19,5 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("request-account/", public_views.request_account, name="request_account"),
     path("fav-chars/", public_views.fav_chars, name="fav_chars"),
+    path("ip-echo/", public_views.ip_echo, name='ip_echo'),
 ]
