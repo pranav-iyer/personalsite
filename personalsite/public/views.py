@@ -81,8 +81,13 @@ def fav_chars(request):
     return render(request, "public/fav_chars.html", context)
 
 
-def ip_echo(request):
-    return HttpResponse(request.META.get("REMOTE_ADDR", ""))
+def ip_echo(request: HttpRequest):
+    x_forwarded_for = request.headers.get("x-forwarded-for")
+    if x_forwarded_for:
+        client_ip = x_forwarded_for.split(",")[0]
+    else:
+        client_ip = request.META.get("REMOTE_ADDR", "")
+    return HttpResponse(client_ip)
 
 
 def request_account(request):
