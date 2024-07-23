@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "pcal",
     "django_celery_beat",
     "til",
+    "pranav_tracker.apps.PranavTrackerConfig",
 ]
 
 MIDDLEWARE = [
@@ -157,7 +158,7 @@ OPEN_URLS = [
     "blog:list",
     "blog:post",
 ]
-OPEN_APPS = ["public"]
+OPEN_APPS = ["public", "pranav_tracker"]
 
 # apps and urls that are open to regular users. everything else is by default only open to staff users
 STD_URLS = ["dashboard:login_redirect"]
