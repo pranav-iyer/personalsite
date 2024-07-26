@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers, serializers, viewsets
 
+from . import views
 from .models import Location
 
 
@@ -30,5 +31,6 @@ router.register(r"locations", LocationViewSet)
 app_name = "pranav_tracker"
 
 urlpatterns = [
+    path("", views.index, name="index"),
     path("api/", include(router.urls)),
 ]

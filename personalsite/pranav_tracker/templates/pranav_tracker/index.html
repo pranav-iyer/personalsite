@@ -1,0 +1,146 @@
+{% extends 'site_base.html' %}
+{% load static %}
+
+{% block title %}Pranav Tracker{% endblock %}
+
+{% block headscripts %}
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+ <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+ <script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+{% endblock headscripts %}
+
+{% block sitecontent %}
+<h1>Pranav Tracker</h1>
+<div class='row align-items center'>
+  <form class='col-10 mb-2' action="" method="get">
+      <div class='row align-items-center'>
+        <div class='col-sm-2'>{{ form.start_date }}</div>
+        <div class='col-sm-2'>{{ form.end_date }}</div>
+        <div class='col-sm-2'><input class='btn btn-sm btn-primary' type='submit' value='Search'></div>
+      </div>
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+        <div class='row fw-bold text-sm text-danger'>
+          <div class ='col'>
+          {{error}}
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+  </form>
+  {% if locations %}
+  <div class='col-2 text-end'>
+    {{locations|length}} locations
+  </div>
+  {% endif %}
+</div>
+
+<div class='row'>
+  <div class='col-10 col-md-11' id="map" style="height: calc(100vh - 175px)"></div>
+  <div class='col-2 col-md-1' id="timeline"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if request.GET.start_date and request.GET.end_date %}
+{{locations|json_script:"locations"}}
+<script>
+  let locations = JSON.parse(document.getElementById('locations').textContent);
+
+  const arrowIcon = L.icon({
+    iconUrl: "{% static 'bootstrap-icons/arrow-up.svg' %}",
+    iconSize: [20,20],
+    iconAnchor: [10,10],
+  });
+
+  const map = L.map('map').setView([59.916057244832935, 10.746231975779079], 14);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+
+  locations.forEach((location) => {
+    L.circle([location.latitude, location.longitude], {
+      stroke: false,
+      fillColor: 'firebrick',
+      fillOpacity: 0.3,
+      radius: location.position_accuracy
+    }).addTo(map);
+  })
+
+  L.polyline(locations.map(loc => [loc.latitude, loc.longitude]),{
+    color: 'firebrick',
+    dashArray: "2 4"
+  }).addTo(map);
+
+  // timeline
+
+  const timeline = document.getElementById('timeline');
+  const height = 500
+  const width = 60
+  const margin = 50
+  
+  const startDate = new Date("{{request.GET.start_date}}")
+  const endDate = new Date("{{request.GET.end_date}}")
+  endDate.setHours(23);
+  endDate.setMinutes(59);
+  endDate.setSeconds(59);
+
+  const y = d3.scaleTime()
+    .domain([startDate, endDate])
+    .range([margin, height - margin]);
+
+
+
+  const svg = d3.create("svg")
+    .attr("width", '100%')
+    .attr("height", '100%')
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('transform-origin', '50 0')
+    .call(d3.zoom().translateExtent([[margin,0],[margin,height]]).on("zoom", zoomed))
+
+  // Add the y-axis.
+  const yAxis = (g,y) => g
+    .call(d3.axisLeft(y))
+
+  const gy = svg.append("g")
+    .attr('transform', `translate(${margin}, 0)`);
+
+  gy.call(yAxis, y)
+
+  const gDot = svg.append("g")
+    .attr("stroke", "darkred")
+    .attr('stroke-width', 1)
+    .attr("fill", "firebrick")
+    .selectAll("circle")
+    .data(locations)
+    .join("circle")
+      .attr("cx", margin)
+    .attr("cy", d => {
+      const v = y(new Date(d.timestamp))
+      console.log(v);
+      return v;
+    })
+      .attr("r", 4);
+
+  function zoomed({transform}) {
+    const zy = transform.rescaleY(y).interpolate(d3.interpolateRound);
+    gy.call(yAxis, zy);
+
+    //console.log(transform)
+    gDot.attr("transform", transform).attr("r", 4/transform.k).attr('stroke-width', 1/transform.k)
+    //gDot.selectAll("circle").attr("r", 8/transform.k)
+  }
+
+  timeline.append(svg.node());
+
+</script>
+
+{% endif %}
+{% endblock %}
