@@ -141,6 +141,8 @@ MEDIA_URL = "/media/"
 
 # sass compiler
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
