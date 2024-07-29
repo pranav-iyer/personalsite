@@ -49,6 +49,8 @@
         </div>
         <div class="p-2 dash-block" id='dash-block-managers'>
             <h5>Managers</h5>
+            <a href="{% static 'pranav-tracker-react/index.html' %}"><img class="popout-button dash-manager-icon"
+                    src="{% static 'icons/tools.png' %}" /></a>
             <a href="{% url 'grocs:list_active' %}"><img class="popout-button dash-manager-icon"
                     src="{% static 'icons/cart-fill.png' %}" /></a>
             <a href="{% url 'reminders:create' %}"><img class="popout-button dash-manager-icon"
