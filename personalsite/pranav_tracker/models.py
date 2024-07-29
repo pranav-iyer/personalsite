@@ -11,3 +11,6 @@ class Location(models.Model):
     altitude_accuracy = models.FloatField()
     heading = models.FloatField()
     speed = models.FloatField()
+
+    class Meta:
+        ordering = ["timestamp"]

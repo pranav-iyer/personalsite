@@ -29,5 +29,10 @@ export default defineConfig(async ({ command, mode }) => {
   const env = loadEnv(mode, process.cwd());
   return {
     plugins: [react(), injectCssPlugin(env.VITE_API_BASE_URL)],
+    server: {
+      proxy: {
+        '/pranav-tracker': 'http://localhost:8000'
+      }
+    }
   };
 });
