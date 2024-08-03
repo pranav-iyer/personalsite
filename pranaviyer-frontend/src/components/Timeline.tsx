@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { Location } from "../constants";
+import { useEffect, useRef } from "react";
+import { Location, Search } from "../constants";
 import * as d3 from "d3";
 
 type Props = {
   locations: Location[];
+  searches: Search[];
   viewDate: Date;
   highlightedLocation: number | null;
   setHighlightedLocation: (v: number | null) => void;
@@ -11,12 +12,15 @@ type Props = {
 
 const Timeline = ({
   locations,
+  searches,
   viewDate,
   highlightedLocation,
   setHighlightedLocation,
 }: Props) => {
   const gY = useRef<SVGGElement | null>(null);
   const gDot = useRef<SVGGElement | null>(null);
+  const gSearches = useRef<SVGGElement | null>(null);
+  const gTooltip = useRef<SVGGElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   const startDT = new Date(viewDate.getTime());
@@ -28,8 +32,6 @@ const Timeline = ({
   endDT.setMinutes(59);
   endDT.setSeconds(59);
   const y = d3.scaleTime().domain([startDT, endDT]).range([0, 500]);
-
-  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     if (gY.current) {
@@ -52,13 +54,17 @@ const Timeline = ({
       d3.select(gY.current).call(d3.axisLeft(zy));
     }
     const dotTransform = new d3.ZoomTransform(transform.k, 0, transform.y);
-    setIsZoomed(true);
     if (gDot.current) {
       d3.select(gDot.current)
         .attr("transform", dotTransform)
         .selectAll("circle")
         .attr("r", 8 / dotTransform.k)
         .attr("stroke-width", 2 / dotTransform.k);
+    }
+    if (gSearches.current) {
+      d3.select(gSearches.current)
+        .attr("transform", dotTransform)
+        .style("font-size", 16 / transform.k);
     }
   };
 
@@ -82,7 +88,7 @@ const Timeline = ({
         ref={svgRef}
         width="100%"
         height="calc(100vh - 175px)"
-        viewBox="-50 0 60 500"
+        viewBox="-40 0 60 500"
       >
         <g ref={gY} />
         <g ref={gDot} stroke="deepskyblue" fill="lightblue">
@@ -96,11 +102,50 @@ const Timeline = ({
               key={loc.id}
               cx={0}
               cy={y(loc.timestamp)}
-              style={{cursor: 'pointer'}}
+              style={{ cursor: "pointer" }}
             />
           ))}
         </g>
+        <g ref={gSearches}>
+          {searches.map((search) => (
+            <text
+              id={`search-icon-${search.id}`}
+              key={search.id}
+              x={0}
+              y={y(search.timestamp)}
+              onPointerEnter={(event) => {
+                const bounds = document
+                  .getElementById(`search-icon-${search.id}`)!
+                  .getBoundingClientRect();
+                d3.select("#tooltip")
+                  .style("opacity", 1)
+                  .style("right", window.innerWidth - bounds.x - 16 + "px")
+                  .style("top", bounds.y + "px")
+                  .text(search.text);
+              }}
+              onPointerLeave={() => {
+                d3.select("#tooltip").style("opacity", 0).text(search.text);
+              }}
+              style={{ cursor: "pointer", borderRadius: "0.4rem" }}
+            >
+              &nbsp;&nbsp;&nbsp;?
+            </text>
+          ))}
+        </g>
       </svg>
+      <div
+        id="tooltip"
+        style={{
+          position: "absolute",
+          opacity: 0,
+          zIndex: 999,
+          backgroundColor: "white",
+          border: "1px solid black",
+          borderRadius: "0.25rem",
+          paddingBlock: "0.25rem",
+          paddingInline: "0.5rem",
+        }}
+      ></div>
     </div>
   );
 };

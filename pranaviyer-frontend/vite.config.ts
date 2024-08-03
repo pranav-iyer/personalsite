@@ -31,7 +31,8 @@ export default defineConfig(async ({ command, mode }) => {
     plugins: [react(), injectCssPlugin(env.VITE_API_BASE_URL)],
     server: {
       proxy: {
-        '/pranav-tracker': 'http://localhost:8000'
+        '/pranav-tracker': 'http://localhost:8000',
+        '/search': 'http://localhost:8000'
       }
     }
   };

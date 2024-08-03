@@ -1,16 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
 import MapView from "./MapView";
 import { useRef, useState } from "react";
-import { APILocation, Location } from "../constants";
+import { APILocation, APISearch, Location, Search } from "../constants";
 import Timeline from "./Timeline";
 
 const Main = () => {
-  const [viewDate, setViewDate] = useState<Date | null>(new Date("2024-07-25"));
-  const [highlightedLocationId, setHighlightedLocationId] = useState<number | null>(
-    null,
-  );
+  const [viewDate, setViewDate] = useState<Date | null>(new Date());
+  const [highlightedLocationId, setHighlightedLocationId] = useState<
+    number | null
+  >(null);
   const dateInputRef = useRef<HTMLInputElement | null>(null);
-  const query = useQuery({
+  const searchesQuery = useQuery({
+    queryKey: ["searches", viewDate],
+    queryFn: async (): Promise<Search[]> => {
+      if (!viewDate) return [];
+      const response = await fetch(
+        `/search/api/searches/?view_date=${viewDate.toISOString().substring(0, 10)}`,
+      );
+      const searches = await response.json();
+      return searches
+        ? searches.map((search: APISearch) => ({
+            ...search,
+            timestamp: new Date(search.timestamp),
+          }))
+        : [];
+    },
+  });
+  const locationsQuery = useQuery({
     queryKey: ["locations", viewDate],
     queryFn: async (): Promise<Location[]> => {
       if (!viewDate) return [];
@@ -20,13 +36,14 @@ const Main = () => {
       const locations = await response.json();
       return locations
         ? locations.map((loc: APILocation) => ({
-          ...loc,
-          timestamp: new Date(loc.timestamp),
-        }))
+            ...loc,
+            timestamp: new Date(loc.timestamp),
+          }))
         : [];
     },
   });
-  const locations = query.data || [];
+  const locations = locationsQuery.data || [];
+  const searches = searchesQuery.data || [];
   return (
     <>
       <div className="row align-items-center mb-2">
@@ -35,7 +52,7 @@ const Main = () => {
             <input
               type="date"
               name="view_date"
-              defaultValue={"2024-07-25"}
+              defaultValue={new Date().toISOString().substring(0, 10)}
               ref={dateInputRef}
               className="form-control form-control-sm form-control-inline"
               id="id_view_date"
@@ -58,10 +75,14 @@ const Main = () => {
         </div>
       </div>
       <div className="row">
-        <MapView locations={locations} highlightedLocationId={highlightedLocationId} />
+        <MapView
+          locations={locations}
+          highlightedLocationId={highlightedLocationId}
+        />
         {viewDate && (
           <Timeline
             locations={locations}
+            searches={searches}
             viewDate={viewDate}
             highlightedLocation={highlightedLocationId}
             setHighlightedLocation={setHighlightedLocationId}

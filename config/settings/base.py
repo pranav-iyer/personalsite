@@ -155,6 +155,7 @@ LOGOUT_REDIRECT_URL = "public:index"
 # can manually add in URLs here that should be outside of the login wall
 OPEN_URLS = [
     "/search/shortcut/",
+    "/search/api/searches/",
     "/pixelart/demo/",
     "/yesman/api/",
     "blog:list",

@@ -8,5 +8,8 @@ class Search(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ["timestamp"]
+
     def __str__(self):
         return self.text

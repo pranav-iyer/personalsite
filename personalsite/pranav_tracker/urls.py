@@ -27,7 +27,7 @@ class LocationFilterSet(filters.FilterSet):
 
 
 class LocationViewSet(viewsets.ModelViewSet):
-    queryset = Location.objects.all().filter(position_accuracy__lte=300)
+    queryset = Location.objects.filter(position_accuracy__lte=300)
     serializer_class = LocationSerializer
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = LocationFilterSet
