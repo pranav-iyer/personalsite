@@ -64,7 +64,7 @@ const Timeline = ({
     if (gSearches.current) {
       d3.select(gSearches.current)
         .attr("transform", dotTransform)
-        .style("font-size", 16 / transform.k);
+        .style("font-size", 24 / transform.k);
     }
   };
 
@@ -113,22 +113,24 @@ const Timeline = ({
               key={search.id}
               x={0}
               y={y(search.timestamp)}
+              fontWeight="bolder"
               onPointerEnter={(event) => {
                 const bounds = document
                   .getElementById(`search-icon-${search.id}`)!
                   .getBoundingClientRect();
                 d3.select("#tooltip")
                   .style("opacity", 1)
-                  .style("right", window.innerWidth - bounds.x - 16 + "px")
+                  .style("right", window.innerWidth - bounds.x - 12 + "px")
                   .style("top", bounds.y + "px")
                   .text(search.text);
               }}
               onPointerLeave={() => {
                 d3.select("#tooltip").style("opacity", 0).text(search.text);
               }}
-              style={{ cursor: "pointer", borderRadius: "0.4rem" }}
+              style={{ cursor: "pointer" }}
+              className="border-rounded"
             >
-              &nbsp;&nbsp;&nbsp;?
+              &nbsp;&nbsp;?
             </text>
           ))}
         </g>
@@ -139,12 +141,8 @@ const Timeline = ({
           position: "absolute",
           opacity: 0,
           zIndex: 999,
-          backgroundColor: "white",
-          border: "1px solid black",
-          borderRadius: "0.25rem",
-          paddingBlock: "0.25rem",
-          paddingInline: "0.5rem",
         }}
+        className="shadow border border-dark bg-light rounded p-2"
       ></div>
     </div>
   );
