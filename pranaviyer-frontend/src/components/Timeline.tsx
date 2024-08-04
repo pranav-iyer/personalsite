@@ -10,6 +10,8 @@ type Props = {
   setHighlightedLocation: (v: number | null) => void;
 };
 
+const HEIGHT = 500;
+
 const Timeline = ({
   locations,
   searches,
@@ -30,7 +32,7 @@ const Timeline = ({
   endDT.setHours(23);
   endDT.setMinutes(59);
   endDT.setSeconds(59);
-  const y = d3.scaleTime().domain([startDT, endDT]).range([0, 500]);
+  const y = d3.scaleTime().domain([startDT, endDT]).range([0, HEIGHT]);
 
   useEffect(() => {
     if (gY.current) {
@@ -57,7 +59,7 @@ const Timeline = ({
       d3.select(gDot.current)
         .attr("transform", dotTransform)
         .selectAll("circle")
-        .attr("r", 8 / dotTransform.k)
+        .attr("r", 6 / dotTransform.k)
         .attr("stroke-width", 2 / dotTransform.k);
     }
     if (gSearches.current) {
@@ -73,8 +75,8 @@ const Timeline = ({
         d3
           .zoom()
           .translateExtent([
-            [0, 0],
-            [0, 500],
+            [0, -HEIGHT],
+            [0, 2*HEIGHT],
           ])
           .on("zoom", zoomed),
       );
@@ -86,8 +88,8 @@ const Timeline = ({
       <svg
         ref={svgRef}
         width="100%"
-        height="calc(100vh - 175px)"
-        viewBox="-40 0 60 500"
+        height="calc(100vh - 90px)"
+        viewBox={`-40 0 60 ${HEIGHT}`}
       >
         <g ref={gY} />
         <g ref={gDot} stroke="deepskyblue" fill="lightblue">
@@ -118,16 +120,17 @@ const Timeline = ({
                   .getElementById(`search-icon-${search.id}`)!
                   .getBoundingClientRect();
                 d3.select("#tooltip")
-                  .style("opacity", 1)
+                  .style("visibility", "visible")
                   .style("right", window.innerWidth - bounds.x - 12 + "px")
                   .style("top", bounds.y + "px")
                   .text(search.text);
               }}
               onPointerLeave={() => {
-                d3.select("#tooltip").style("opacity", 0).text(search.text);
+                d3.select("#tooltip")
+                  .style("visibility", "hidden")
+                  .text(search.text);
               }}
               style={{ cursor: "pointer" }}
-              className="border-rounded"
             >
               &nbsp;&nbsp;?
             </text>
@@ -138,7 +141,7 @@ const Timeline = ({
         id="tooltip"
         style={{
           position: "absolute",
-          opacity: 0,
+          visibility: "hidden",
           zIndex: 999,
         }}
         className="shadow border border-dark bg-light rounded p-2"

@@ -9,7 +9,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="d-flex flex-column site-container mx-2">
         <NavBar />
-        <h2>Pranav Tracker</h2>
         <Main />
       </div>
     </QueryClientProvider>

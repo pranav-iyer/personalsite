@@ -12,7 +12,6 @@ const MapView = ({ locations, highlightedLocationId }: Props) => {
     .at(0);
   return (
     <MapContainer
-      className="col-10 col-md-11"
       style={{ height: "calc(100vh - 175px)" }}
       center={CENTER}
       zoom={13}

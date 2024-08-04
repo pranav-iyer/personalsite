@@ -46,39 +46,44 @@ const Main = () => {
   const searches = searchesQuery.data || [];
   return (
     <>
-      <div className="row align-items-center mb-2">
-        <div className="row align-items-center">
-          <div className="col-4 col-lg-2">
-            <input
-              type="date"
-              name="view_date"
-              defaultValue={new Date().toISOString().substring(0, 10)}
-              ref={dateInputRef}
-              className="form-control form-control-sm form-control-inline"
-              id="id_view_date"
+      <div className="row">
+        <div className="col-10 col-md-11">
+        <h2>Pranav Tracker</h2>
+          <div className="row align-items-center mb-2">
+            <div className="row align-items-center">
+              <div className="col-4 col-lg-2">
+                <input
+                  type="date"
+                  name="view_date"
+                  defaultValue={new Date().toISOString().substring(0, 10)}
+                  ref={dateInputRef}
+                  className="form-control form-control-sm form-control-inline"
+                  id="id_view_date"
+                />
+              </div>
+              <div className="col-4 col-lg-2">
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={() =>
+                    dateInputRef.current &&
+                    setViewDate(new Date(dateInputRef.current.value))
+                  }
+                >
+                  Search
+                </button>
+              </div>
+              <div className="col-4 col-lg-8 text-end p-0">
+                ({locations.length} locations)
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <MapView
+              locations={locations}
+              highlightedLocationId={highlightedLocationId}
             />
           </div>
-          <div className="col-4 col-lg-2">
-            <button
-              className="btn btn-sm btn-primary"
-              onClick={() =>
-                dateInputRef.current &&
-                setViewDate(new Date(dateInputRef.current.value))
-              }
-            >
-              Search
-            </button>
-          </div>
-          <div className="col-4 col-lg-8 text-end p-0">
-            ({locations.length} locations)
-          </div>
         </div>
-      </div>
-      <div className="row">
-        <MapView
-          locations={locations}
-          highlightedLocationId={highlightedLocationId}
-        />
         {viewDate && (
           <Timeline
             locations={locations}
