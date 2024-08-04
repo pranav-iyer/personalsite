@@ -20,7 +20,6 @@ const Timeline = ({
   const gY = useRef<SVGGElement | null>(null);
   const gDot = useRef<SVGGElement | null>(null);
   const gSearches = useRef<SVGGElement | null>(null);
-  const gTooltip = useRef<SVGGElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   const startDT = new Date(viewDate.getTime());
@@ -37,7 +36,7 @@ const Timeline = ({
     if (gY.current) {
       d3.select(gY.current).call(d3.axisLeft(y));
     }
-  }, []);
+  }, [y]);
 
   useEffect(() => {
     if (gDot.current) {
@@ -114,7 +113,7 @@ const Timeline = ({
               x={0}
               y={y(search.timestamp)}
               fontWeight="bolder"
-              onPointerEnter={(event) => {
+              onPointerEnter={() => {
                 const bounds = document
                   .getElementById(`search-icon-${search.id}`)!
                   .getBoundingClientRect();
