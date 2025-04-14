@@ -1,4 +1,5 @@
 {% extends 'site_base.html' %}
+{% load date_fmt %}
 {% load static %}
 
 {% block title %}Dashboard{% endblock %}
@@ -144,10 +145,16 @@
             <ul class="list-group ms-1">
                 {% for glist in glists %}
                 <li class="list-group-item todo-item">
-                    <div class="me-1 fw-bold">
+                    <div class="fw-bold d-flex align-items-start justify-content-between">
                         <a class="link-dark" href="{% url 'grocs:editv2' glist.id %}">
                             {{glist.title}}
                         </a>
+                        <small class='text-muted'>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                                <use href="{% static 'site_icons.svg' %}#icon-stopwatch"></use>
+                            </svg>
+                            {{glist.updated|timesince|shorten_date}} ago
+                        </small>
                     </div>
                     <form action="{% url 'grocs:save_glist_from_dash' glist.id %}" method="post">
                         {% csrf_token %}

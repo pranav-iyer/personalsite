@@ -50,14 +50,6 @@ class GListAllView(GListListView):
         return ctx
 
 
-def delete_list(request, pk):
-    glist = get_object_or_404(GList, pk=pk)
-    if request.method == "POST":
-        glist.delete()
-        return redirect("grocs:list_active")
-    raise Http404()
-
-
 def shopping(request, pk):
     glist = get_object_or_404(GList, pk=pk)
     if request.method == "POST":

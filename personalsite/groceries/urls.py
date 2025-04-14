@@ -9,7 +9,6 @@ urlpatterns = [
     path("glist/<int:pk>/edit/", views.edit_glist, name="edit"),
     path("glist/<int:pk>/edit/v2", views.edit_glist_v2, name="editv2"),
     path("glist/<int:pk>/shopping/", views.shopping, name="shopping"),
-    path("glist/<int:pk>/delete/", views.delete_list, name="delete"),
     path(
         "glist/<int:pk>/save-from-dash/",
         views.save_glist_from_dash,
