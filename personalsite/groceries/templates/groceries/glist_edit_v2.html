@@ -29,51 +29,60 @@
       </div>
 
       <div class='mb-3'>
-        <label class='form-label' for="{{form.contents.auto_id}}">{{form.contents.label}}</label>
-        <ul id='glist-items' class='list-group mb-2'>
+        <label class='form-label mt-2' for="{{form.contents.auto_id}}" id='glist-items-label' style='display: {% if checked_items %}inline-block{% else %}none{% endif %};'>{{form.contents.label}}</label>
+        <ul id='glist-items' class='list-group'>
 
-        {% for item in items %}
+        {% for item in checked_items %}
         <li class='list-group-item py-1 ps-2 d-flex gap-1 align-items-center'>
           <span class='me-1 border-end border-1 pe-2'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon item-handle" viewBox="0 0 16 16">
-              <use href="{% static 'site_icons.svg' %}#icon-grip-horizontal"></use>
+              <use href="{% static 'site_icons.svg' %}#icon-grip-vertical"></use>
             </svg>
           </span>
           <span class='me-1 border-end border-1 pe-2'>
-            <input class="form-check-input" type="checkbox" value="">
+            <input class="item-check form-check-input" type="checkbox" value="">
           </span>
           <input class='item-input border-0 form-control form-control-sm' style='max-width: 250px' value="{{item}}" />
+          {% if not form.instance.completed %}
           <button type='button' class='btn btn-sm btn-white item-input-remove'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
               <use href="{% static 'site_icons.svg' %}#icon-trash3"></use>
             </svg>
           </button>
+          {% endif %}
         </li>
         {% endfor %}
 
-        <li class='list-group-item py-1 ps-2 d-flex gap-1 align-items-center'>
-          <span class='me-1 border-end border-1 pe-2'>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon item-handle" viewBox="0 0 16 16">
-              <use href="{% static 'site_icons.svg' %}#icon-grip-horizontal"></use>
-            </svg>
-          </span>
-          <span class='me-1 border-end border-1 pe-2'>
-            <input class="form-check-input" type="checkbox" value="">
-          </span>
-          <input class='item-input border-0 form-control form-control-sm' style='max-width: 250px' value="" />
-          <button type='button' class='btn btn-sm btn-white item-input-remove'>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
-              <use href="{% static 'site_icons.svg' %}#icon-trash3"></use>
-            </svg>
-          </button>
-        </li>
-
         </ul>
+
+        <label class='form-label mt-2' id='completed-items-label' style='display: {% if unchecked_items %}inline-block{% else %}none{% endif %};'>Completed</label>
+        <ul id='completed-items' class='list-group'>
+          {% for item in unchecked_items %}
+          <li class='list-group-item py-1 ps-2 d-flex gap-1 align-items-center'>
+            <span class='me-1 border-end border-1 pe-2'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon item-handle" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-grip-vertical"></use>
+              </svg>
+            </span>
+            <span class='me-1 border-end border-1 pe-2'>
+              <input class="item-check form-check-input" type="checkbox" value="" checked>
+            </span>
+            <input class='item-input border-0 form-control form-control-sm' style='max-width: 250px' value="{{item}}"/>
+            {% if not form.instance.completed %}
+            <button type='button' class='btn btn-sm btn-white item-input-remove'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon" viewBox="0 0 16 16">
+                <use href="{% static 'site_icons.svg' %}#icon-trash3"></use>
+              </svg>
+            </button>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+
       </div>
       {% if not form.instance.completed %}
       <div class='d-flex gap-2 align-items-end'>
-        <button type='button' class='btn btn-secondary' id='submit_save' >Save list</button>
-        <button type='button' class='btn btn-info'  id="submit_shopping">Shopping</button>
+        <button type='button' class='btn btn-secondary'  id="mark_done">Mark as done</button>
         <small id='saved-marker' class='text-success bg-dark rounded-pill py-1 px-2 pe-3' style='visibility: hidden;'>
 
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon"
@@ -89,20 +98,30 @@
 {% endblock content %}
 
 {% block scripts %}
+{% if not form.instance.completed %}
 <script>
   Sortable.create(document.getElementById('glist-items'), {
+    animation: 150,
     handle: '.item-handle',
+    ghostClass: 'bg-light',
     onEnd: () => {
       triggerSave(0)
     }
   })
 
-  function startShopping () {
-    triggerSave(0, () => {
-      window.location.href = "{% url 'grocs:shopping' form.instance.pk %}"
-    })
+  Sortable.create(document.getElementById('completed-items'), {
+    animation: 150,
+    handle: '.item-handle',
+    ghostClass: 'bg-light',
+    onEnd: () => {
+      triggerSave(0)
+    }
+  })
+
+  function markAsDone () {
+    triggerSave(0, true)
   }
-  document.getElementById('submit_shopping').addEventListener('click', startShopping)
+  document.getElementById('mark_done').addEventListener('click', markAsDone)
 
   function createInput () {
     const newItemTemplate = document.createElement('template');
@@ -110,11 +129,11 @@
       <li class='list-group-item py-1 ps-2 d-flex gap-1 align-items-center'>
         <span class='me-1 border-end border-1 pe-2'>
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="svg-icon item-handle" viewBox="0 0 16 16">
-            <use href="{% static 'site_icons.svg' %}#icon-grip-horizontal"></use>
+            <use href="{% static 'site_icons.svg' %}#icon-grip-vertical"></use>
           </svg>
         </span>
         <span class='me-1 border-end border-1 pe-2'>
-          <input class="form-check-input" type="checkbox" value="">
+          <input class="item-check form-check-input" type="checkbox" value="">
         </span>
         <input class='item-input border-0 form-control form-control-sm' style='max-width: 250px' value="" />
         <button type='button' class='btn btn-sm btn-white item-input-remove'>
@@ -124,16 +143,10 @@
         </button>
       </li>
       `
-    newItemTemplate.content.firstElementChild.addEventListener('input', addNewInputIfLast)
-    newItemTemplate.content.firstElementChild.addEventListener('keydown', dontSubmitOnEnter)
+    newItemTemplate.content.querySelector('.item-input').addEventListener('keydown', dontSubmitOnEnter)
+    newItemTemplate.content.querySelector('.item-check').addEventListener('change', handleItemCheck)
     newItemTemplate.content.querySelector('button.item-input-remove').addEventListener('click', removeItem)
     return newItemTemplate.content.firstElementChild;
-  }
-  
-  function addNewInputIfLast (event) {
-    if (event.target.closest('li').nextElementSibling !== null) return;
-
-    event.target.closest('ul').appendChild(createInput());
   }
 
   function removeItem (event) {
@@ -144,11 +157,11 @@
 
   var saveTimeout;
 
-  function triggerSave(timeout, callback) {
+  function triggerSave(timeout, markComplete) {
     clearTimeout(saveTimeout);
     document.getElementById('saved-marker').style['visibility'] = 'hidden'
     saveTimeout = setTimeout(() => {
-      saveList(callback);
+      saveList(markComplete);
     }, timeout);
   }
 
@@ -199,17 +212,23 @@
     }
   }
 
-  Array.from(document.getElementsByClassName('item-input')).forEach(el => el.addEventListener('input', addNewInputIfLast))
   Array.from(document.getElementsByClassName('item-input')).forEach(el => el.addEventListener('keydown', dontSubmitOnEnter))
 
   Array.from(document.getElementsByClassName('item-input-remove')).forEach(el => el.addEventListener('click', removeItem))
 
-  function saveList (callback) {
-    const newContent = Array.from(document.getElementById('glist-edit-form').querySelectorAll('input.item-input')).map(inp => inp.value).join('\n').trim()
+  function saveList (markComplete) {
+    const uncompletedContent = Array.from(document.getElementById('glist-items').querySelectorAll('input.item-input')).map(inp => inp.value).join('\n').trim()
+    const completedContent = Array.from(document.getElementById('completed-items').querySelectorAll('input.item-input')).map(inp => inp.value).join('\n').trim()
+    const content = [uncompletedContent, completedContent].join('\n')
+    const checkedIndex = uncompletedContent === '' ? 0 : uncompletedContent.split('\n').length
     const formData = new FormData()
     formData.append('title', document.querySelector('input[name=title]').value)
-    formData.append('contents', newContent)
+    formData.append('contents', content)
+    formData.append('checked_index', checkedIndex)
     formData.append('csrfmiddlewaretoken', document.querySelector('input[name=csrfmiddlewaretoken]').value)
+    if (markComplete) {
+      formData.append('complete', true)
+    }
 
     fetch(document.URL, {
       method: 'POST',
@@ -218,16 +237,35 @@
     .then(res => {
       if (res.ok) {
         document.getElementById('saved-marker').style['visibility'] = 'visible'
-        callback?.();
+        if (markComplete) {
+          window.location.reload()
+        }
       } else {
         throw new Error('Error saving request')
       }
     })
   }
 
-  document.getElementById('submit_save').addEventListener('click', event => {
-    event.preventDefault()
+  function handleItemCheck(event) {
+    const completedList = document.getElementById('completed-items');
+    const uncompletedList = document.getElementById('glist-items');
+    if (event.target.checked) {
+      completedList.appendChild(event.target.closest('li'));
+      document.getElementById('completed-items-label').style.display = 'inline-block';
+      if (uncompletedList.children.length === 0) {
+        document.getElementById('glist-items-label').style.display = 'none';
+      }
+    } else {
+      uncompletedList.appendChild(event.target.closest('li'));
+      document.getElementById('glist-items-label').style.display = 'inline-block';
+      if (completedList.children.length === 0) {
+        document.getElementById('completed-items-label').style.display = 'none';
+      }
+    }
     triggerSave(0);
-  })
+  }
+
+  Array.from(document.getElementsByClassName('item-check')).forEach(el => el.addEventListener('change', handleItemCheck))
 </script>
+{% endif %}
 {% endblock %}

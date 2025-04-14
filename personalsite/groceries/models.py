@@ -18,9 +18,28 @@ class GList(models.Model):
     updated = models.DateTimeField(auto_now=True)
     completed = models.DateTimeField(null=True, blank=True)
     contents = models.TextField()
+    checked_index = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.title
+
+    @property
+    def items(self):
+        return self.contents.strip().split("\n")
+
+    @property
+    def checked_items(self):
+        if self.checked_index is not None:
+            return self.items[: self.checked_index]
+        else:
+            return self.items
+
+    @property
+    def unchecked_items(self):
+        if self.checked_index is not None:
+            return self.items[self.checked_index :]
+        else:
+            return []
 
 
 ##################################################################################

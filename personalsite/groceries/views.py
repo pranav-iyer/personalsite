@@ -66,8 +66,9 @@ def shopping(request, pk):
             glist.save()
 
             return redirect("grocs:list_all")
-    items = glist.contents.strip().split("\n")
-    return render(request, "groceries/shopping.html", {"glist": glist, "items": items})
+    return render(
+        request, "groceries/shopping.html", {"glist": glist, "items": glist.items}
+    )
 
 
 def save_glist_from_dash(request, pk):
@@ -106,16 +107,31 @@ def save_glist_from_dash(request, pk):
 def edit_glist_v2(request, pk):
     glist = get_object_or_404(GList, pk=pk)
     if request.method == "POST":
-        form = GListForm(request.POST, instance=glist)
+        post_data = request.POST.copy()
+        should_complete = False
+        if "complete" in post_data:
+            should_complete = True
+            post_data.pop("complete")
+
+        form = GListForm(post_data, instance=glist)
         if form.is_valid():
             form.save()
+            if should_complete:
+                glist.completed = timezone.now()
+                glist.save()
             return redirect("grocs:editv2", glist.id)
         else:
             print(form.errors)
     form = GListForm(instance=glist)
-    items = glist.contents.strip().split("\n")
     return render(
-        request, "groceries/glist_edit_v2.html", {"form": form, "items": items}
+        request,
+        "groceries/glist_edit_v2.html",
+        {
+            "form": form,
+            "items": glist.items,
+            "checked_items": glist.checked_items,
+            "unchecked_items": glist.unchecked_items,
+        },
     )
 
 
@@ -146,9 +162,9 @@ def create_glist(request):
     if request.method == "POST":
         form = GListForm(request.POST)
         if form.is_valid():
-            form.save()
+            glist = form.save()
 
-            return redirect("grocs:list_active")
+            return redirect("grocs:editv2", glist.id)
     else:
         form = GListForm()
     return render(request, "groceries/glist_create.html", {"form": form})

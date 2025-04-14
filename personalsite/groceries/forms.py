@@ -7,7 +7,7 @@ from .models import GList
 class GListForm(forms.ModelForm):
     class Meta:
         model = GList
-        fields = ["title", "contents"]
+        fields = ["title", "contents", "checked_index"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
