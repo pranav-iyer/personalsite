@@ -79,9 +79,9 @@ def save_glist_from_dash(request, pk):
             post_data.pop("submit_save")
             redirect_url = "dashboard:dash"
 
-        if "submit_shopping" in post_data:
-            post_data.pop("submit_shopping")
-            redirect_url = "grocs:shopping"
+        if "submit_edit" in post_data:
+            post_data.pop("submit_edit")
+            redirect_url = "grocs:editv2"
 
         glist = get_object_or_404(GList, pk=pk)
         form = GListForm(post_data, instance=glist)
