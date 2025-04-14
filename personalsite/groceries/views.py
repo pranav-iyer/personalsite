@@ -1,7 +1,4 @@
-from curses.ascii import HT
-
 from django.contrib import messages
-from django.db.models import Value as V
 from django.db.models.functions import Chr, Length, Replace, Trim
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -106,6 +103,22 @@ def save_glist_from_dash(request, pk):
     raise Http404()
 
 
+def edit_glist_v2(request, pk):
+    glist = get_object_or_404(GList, pk=pk)
+    if request.method == "POST":
+        form = GListForm(request.POST, instance=glist)
+        if form.is_valid():
+            form.save()
+            return redirect("grocs:editv2", glist.id)
+        else:
+            print(form.errors)
+    form = GListForm(instance=glist)
+    items = glist.contents.strip().split("\n")
+    return render(
+        request, "groceries/glist_edit_v2.html", {"form": form, "items": items}
+    )
+
+
 def edit_glist(request, pk):
     glist = get_object_or_404(GList, pk=pk)
     if request.method == "POST":
@@ -113,7 +126,7 @@ def edit_glist(request, pk):
         redirect_url = None
         if "submit_save" in post_data:
             post_data.pop("submit_save")
-            redirect_url = "grocs:edit"
+            redirect_url = "grocs:editv2"
 
         if "submit_shopping" in post_data:
             post_data.pop("submit_shopping")

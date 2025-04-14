@@ -7,6 +7,7 @@ urlpatterns = [
     path("glists/all/", views.GListAllView.as_view(), name="list_all"),
     path("glists/active/", views.GListActiveView.as_view(), name="list_active"),
     path("glist/<int:pk>/edit/", views.edit_glist, name="edit"),
+    path("glist/<int:pk>/edit/v2", views.edit_glist_v2, name="editv2"),
     path("glist/<int:pk>/shopping/", views.shopping, name="shopping"),
     path("glist/<int:pk>/delete/", views.delete_list, name="delete"),
     path(
