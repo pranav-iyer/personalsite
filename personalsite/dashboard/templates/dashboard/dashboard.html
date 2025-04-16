@@ -146,7 +146,7 @@
                 {% for glist in glists %}
                 <li class="list-group-item todo-item">
                     <div class="fw-bold d-flex align-items-start justify-content-between">
-                        <a class="link-dark" href="{% url 'grocs:editv2' glist.id %}">
+                        <a class="link-dark" href="{% url 'grocs:edit' glist.id %}">
                             {{glist.title}}
                         </a>
                         <small class='text-muted'>
