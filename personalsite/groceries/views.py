@@ -50,19 +50,6 @@ class GListAllView(GListListView):
         return ctx
 
 
-def shopping(request, pk):
-    glist = get_object_or_404(GList, pk=pk)
-    if request.method == "POST":
-        if "done_list" in request.POST:
-            glist.completed = timezone.now()
-            glist.save()
-
-            return redirect("grocs:list_all")
-    return render(
-        request, "groceries/shopping.html", {"glist": glist, "items": glist.items}
-    )
-
-
 def save_glist_from_dash(request, pk):
     if request.method == "POST":
         post_data = request.POST.copy()
@@ -73,7 +60,7 @@ def save_glist_from_dash(request, pk):
 
         if "submit_edit" in post_data:
             post_data.pop("submit_edit")
-            redirect_url = "grocs:editv2"
+            redirect_url = "grocs:edit"
 
         glist = get_object_or_404(GList, pk=pk)
         form = GListForm(post_data, instance=glist)
@@ -96,7 +83,7 @@ def save_glist_from_dash(request, pk):
     raise Http404()
 
 
-def edit_glist_v2(request, pk):
+def edit_glist(request, pk):
     glist = get_object_or_404(GList, pk=pk)
     if request.method == "POST":
         post_data = request.POST.copy()
@@ -111,13 +98,13 @@ def edit_glist_v2(request, pk):
             if should_complete:
                 glist.completed = timezone.now()
                 glist.save()
-            return redirect("grocs:editv2", glist.id)
+            return redirect("grocs:edit", glist.id)
         else:
             print(form.errors)
     form = GListForm(instance=glist)
     return render(
         request,
-        "groceries/glist_edit_v2.html",
+        "groceries/glist_edit.html",
         {
             "form": form,
             "items": glist.items,
@@ -127,36 +114,13 @@ def edit_glist_v2(request, pk):
     )
 
 
-def edit_glist(request, pk):
-    glist = get_object_or_404(GList, pk=pk)
-    if request.method == "POST":
-        post_data = request.POST.copy()
-        redirect_url = None
-        if "submit_save" in post_data:
-            post_data.pop("submit_save")
-            redirect_url = "grocs:editv2"
-
-        if "submit_shopping" in post_data:
-            post_data.pop("submit_shopping")
-            redirect_url = "grocs:shopping"
-
-        form = GListForm(post_data, instance=glist)
-        if form.is_valid():
-            form.save()
-
-            return redirect(redirect_url, pk)
-    else:
-        form = GListForm(instance=glist)
-    return render(request, "groceries/glist_edit.html", {"form": form})
-
-
 def create_glist(request):
     if request.method == "POST":
         form = GListForm(request.POST)
         if form.is_valid():
             glist = form.save()
 
-            return redirect("grocs:editv2", glist.id)
+            return redirect("grocs:edit", glist.id)
     else:
         form = GListForm()
     return render(request, "groceries/glist_create.html", {"form": form})

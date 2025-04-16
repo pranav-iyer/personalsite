@@ -11,9 +11,7 @@ class URLPingTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.user = User.objects.create_user(
-            "testuser", "test@test.org", "testpwd"
-        )  # type:ignore
+        cls.user = User.objects.create_user("testuser", "test@test.org", "testpwd")  # type:ignore
         GList.objects.create(title="My List")
         return super().setUpTestData()
 
@@ -43,10 +41,6 @@ class URLPingTest(TestCase):
         res = self.client.get("/gman/glist/1/")
         self.assertEqual(res.status_code, 200)
 
-    def test_shopping(self):
-        res = self.client.get("/gman/glist/1/shopping/")
-        self.assertEqual(res.status_code, 200)
-
     def test_store_select(self):
         res = self.client.get("/gman/glist/1/store-select/")
         self.assertEqual(res.status_code, 200)
@@ -66,7 +60,6 @@ class LoginProtectedTest(TestCase):
             "glist/all/",
             "glist/active/",
             "glist/add/",
-            "glist/0/shopping/",
             "glist/0/trip/",
             "glist/0/",
             "glist/0/store-select/",
