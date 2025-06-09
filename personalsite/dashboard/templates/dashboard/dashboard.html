@@ -195,8 +195,8 @@
 {% block scripts %}
 <script>
     // search bar handler
-    const allowedTlds = [".com", ".net", ".org", ".gov", ".edu", "127.0.0.1:8000", ".no"]
-    let favoriteSites = ["netflix.com", "messenger.com", "youtube.com", "facebook.com", "twitter.com", "gmail.com", "maps.google.com", "drive.google.com", "github.com", "google.com", "127.0.0.1:8000", "nytimes.com", "instagram.com", "cooking.nytimes.com", "sheets.google.com", "docs.google.com", "tdbank.com", "discover.com", "actblue.com", "calendar.google.com", "translate.google.com", "nrk.no", "tv.nrk.no", "ordbokene.no", "feedly.com", "jessicapiperformissouri.com"]
+    const allowedTlds = [".com", ".net", ".org", ".gov", ".edu", "127.0.0.1:8000", ".no", ".be", ".es"]
+    let favoriteSites = ["netflix.com", "messenger.com", "youtube.com", "facebook.com", "twitter.com", "gmail.com", "maps.google.com", "drive.google.com", "github.com", "google.com", "127.0.0.1:8000", "nytimes.com", "instagram.com", "cooking.nytimes.com", "sheets.google.com", "docs.google.com", "tdbank.com", "discover.com", "actblue.com", "calendar.google.com", "translate.google.com", "nrk.no", "tv.nrk.no", "ordbokene.no", "feedly.com", "jessicapiperformissouri.com", "movistarplus.es", "disneyplus.com"]
     favoriteSites = favoriteSites.concat(favoriteSites.filter(url => url !== "127.0.0.1:8000").map(url => "www." + url))
     const autocompleteHandler = (event) => {
         const mainInput = document.getElementById("search-field");
