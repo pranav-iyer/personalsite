@@ -24,7 +24,7 @@
             <form class="mx-auto mb-0" id="search-form" style="max-width: 500px;">
                 <div class="input-group">
                     <input class="form-control py-2 px-3" id="search-field" type="text"
-                        placeholder="URL or DuckDuckGo..." autocomplete="off" required autofocus>
+                        placeholder="URL or Ecosia..." autocomplete="off" required autofocus>
                     <button class="btn btn-primary py-2 px-3" value="Search" type="submit">Go</button>
                 </div>
             </form>
@@ -221,9 +221,9 @@
         var parsedUrl = ""
         var fullUrl = ""
         if (/\s/g.test(searchText) || !searchText.includes(".")) {
-            fullUrl = `https://duckduckgo.com/?q=${searchText}`
+            fullUrl = `https://ecosia.org/search?q=${encodeURIComponent(searchText)}`
         } else if (!allowedTlds.some((tld) => searchText.includes(tld))) {
-            fullUrl = `https://duckduckgo.com/?q=${searchText}`
+            fullUrl = `https://ecosia.org/search?q=${encodeURIComponent(searchText)}`
         } else {
             if (searchText.startsWith("https://")) {
                 parsedUrl = searchText.slice(8)

@@ -29,9 +29,9 @@ def search_shortcut_view(request):
             else:
                 Search.objects.create(text=request.GET["q"])
             return redirect(
-                f"https://duckduckgo.com/?{urlencode([('q', request.GET['q'])])}"
+                f"https://ecosia.org/search?{urlencode([('q', request.GET['q'])])}"
             )
         else:
-            return redirect("https://duckduckgo.com/")
+            return redirect("https://ecosia.org/")
     else:
         raise Http404()
