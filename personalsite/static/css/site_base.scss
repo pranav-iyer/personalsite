@@ -280,6 +280,11 @@ p {
   code.inline-code {
     color: $code-color;
   }
+  blockquote {
+    padding-left: 1rem;
+    border-left: 3px solid $gray-500;
+    color: $gray-600;
+  }
 }
 
 .post-edit-editor,
