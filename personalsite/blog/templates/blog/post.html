@@ -17,7 +17,7 @@
   <div class="big-margins">
     <h1 class="mb-0">{{post.title}}</h1>
     <div class="small text-muted mb-3">
-      {{post.published}}
+      Pranav Iyer &middot; {{post.published}}
       {% if request.user.is_staff %}
       <strong class="mid-dot">&middot;</strong> <a href="{% url 'blog:edit' post.id %}">Edit</a>
       <strong class="mid-dot">&middot;</strong> <a href="{% url 'blog:unpublish' post.id %}">Unpublish</a>
