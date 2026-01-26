@@ -269,14 +269,14 @@ export function clusterColors(imData, numColors, setProgress) {
   let colorArray = imageDataToColors(imData);
   // convert colors to yuv for clustering
   for (let i = 0; i < colorArray.length; i++) {
-    colorArray[i] = rgb2yuv(colorArray[i]);
+    colorArray[i] = rgb2i1i2i3(colorArray[i]);
   }
 
   let kMeansResult = kMeans(colorArray, numColors, 10, 20, setProgress);
 
   // convert result back to rgb for drawing
   for (let i = 0; i < kMeansResult.clusters.length; i++) {
-    kMeansResult.clusters[i] = yuv2rgb(kMeansResult.clusters[i]);
+    kMeansResult.clusters[i] = i1i2i32rgb(kMeansResult.clusters[i]);
   }
 
   let newImage = new ImageData(imData.width, imData.height);
@@ -304,6 +304,24 @@ function yuv2rgb(yuv) {
     yuv[0] - 0.395 * yuv[1] - 0.581 * yuv[2],
     yuv[0] + 2.032 * yuv[1],
     yuv[3],
+  ];
+}
+
+function rgb2i1i2i3(rgb) {
+  return [
+    (rgb[0] / 3) + (rgb[1] / 3) + (rgb[2] / 3),
+    (rgb[0] - rgb[2]) / 2,
+    (2*rgb[1] - rgb[0] - rgb[2]) / 4,
+    rgb[3]
+  ];
+}
+
+function i1i2i32rgb(i1i2i3) {
+  return [
+    i1i2i3[0] + i1i2i3[1] - 0.6666666* i1i2i3[2],
+    i1i2i3[0] + 1.33333*i1i2i3[2],
+    i1i2i3[0] - i1i2i3[1] - 0.6666666*i1i2i3[2],
+    i1i2i3[3],
   ];
 }
 
