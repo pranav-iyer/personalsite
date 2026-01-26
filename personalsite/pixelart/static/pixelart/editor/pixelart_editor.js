@@ -182,7 +182,6 @@ PHOTO_DISPLAY.addEventListener("wheel", (event) => {
 function zoom(x, y, deltaY) {
   let initScale = getScaleProperty();
   let newScale = pm.clamp(initScale - deltaY * 0.004, 0.1, 5);
-  setScaleProperty(newScale);
 
   // translate so that it looks like we are zooming onto the mouse
   let { x: localX, y: localY } = getLeftCanvasCoords({
@@ -195,6 +194,7 @@ function zoom(x, y, deltaY) {
   let newY = oldY - (newScale - initScale) * localY;
   setXProperty(newX);
   setYProperty(newY);
+  setScaleProperty(newScale);
 }
 
 function setScaleProperty(val) {
