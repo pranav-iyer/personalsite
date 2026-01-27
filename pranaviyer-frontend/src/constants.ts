@@ -26,4 +26,5 @@ export interface APISearch extends Omit<Search, "timestamp"> {
   timestamp: string;
 }
 
-export const CENTER: LatLngTuple = [59.91705240606919, 10.74147640762516];
+// export const CENTER: LatLngTuple = [59.91705240606919, 10.74147640762516]; // Oslo
+export const CENTER: LatLngTuple = [50.876073, 4.700443]; // Leuven
