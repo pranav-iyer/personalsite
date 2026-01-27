@@ -244,6 +244,9 @@ window.onload = () => {
   setYProperty(VIEW_CONTAINER.clientHeight / 2);
   setScaleProperty(1);
   PHOTO_DISPLAY.style.setProperty("--right-scale", 1);
+  bootstrap.Toast.getOrCreateInstance(
+    document.getElementById("success-toast")
+  ).hide();
 };
 
 function setNewHeight(val) {
