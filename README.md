@@ -34,3 +34,37 @@ Stores events and displays a weekly schedule in an easy-to-understand format. Ca
 ### Favorite Characters
 
 [A collection of text characters available to easily copy on demand.](https://pranaviyer.com/fav-chars/)
+
+# Instructions
+
+You need Python 3.8 installed.
+
+First, fill out the `config/.env` file following the example in `config/.env.example`.
+
+Then, install dependencies using `apt`:
+```
+sudo apt update
+sudo apt install redis-server
+sudo apt install libpq-dev postgresql postgresql-contrib
+```
+
+set up a database and user and password using these commands in PG:
+```
+create database personalsite;
+create user personalsiteuser with password 'personalsitepwd';
+alter role personalsiteuser set client_encoding to 'utf8';
+alter role personalsiteuser set default_transaction_isolation to 'read committed';
+alter role personalsiteuser set timezone to 'UTC';
+grant all privileges on database personalsite to personalsiteuser;
+\q
+```
+
+Then, to start up, once you have a virtual environment created:
+
+```
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py compress
+python manage.py createsuperuser # follow prompts
+python manage.py runserver
+```
