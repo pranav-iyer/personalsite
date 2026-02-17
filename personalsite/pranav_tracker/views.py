@@ -18,13 +18,10 @@ def index(request):
         view_date = form.cleaned_data["view_date"]
         if not view_date:
             locations = []
-            ranges = []
         else:
             locations = get_locations(view_date)
-            ranges = get_ranges(locations)
     else:
         locations = []
-        ranges = []
     return render(
         request, "pranav_tracker/index.html", {"form": form, "locations": locations}
     )
