@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import MapView from "./MapView";
 import { useRef, useState } from "react";
-import { APILocation, APISearch, Location, Search } from "../constants";
+import { APIRange, APISearch, Range, Search } from "../constants";
 import Timeline from "./Timeline";
+import { formatDelta } from "../times";
 
 const Main = () => {
   const [viewDate, setViewDate] = useState<Date | null>(new Date());
-  const [highlightedLocationId, setHighlightedLocationId] = useState<
-    number | null
-  >(null);
+  const [highlightedRangeId, setHighlightedRangeId] = useState<string | null>(
+    null,
+  );
   const dateInputRef = useRef<HTMLInputElement | null>(null);
   const searchesQuery = useQuery({
     queryKey: ["searches", viewDate],
@@ -26,29 +27,37 @@ const Main = () => {
         : [];
     },
   });
-  const locationsQuery = useQuery({
-    queryKey: ["locations", viewDate],
-    queryFn: async (): Promise<Location[]> => {
+  const rangesQuery = useQuery({
+    queryKey: ["ranges", viewDate],
+    queryFn: async (): Promise<Range[]> => {
       if (!viewDate) return [];
       const response = await fetch(
-        `/pranav-tracker/api/locations/?view_date=${viewDate.toISOString().substring(0, 10)}`,
+        `/pranav-tracker/api/ranges/?view_date=${viewDate.toISOString().substring(0, 10)}`,
       );
-      const locations = await response.json();
-      return locations
-        ? locations.map((loc: APILocation) => ({
-            ...loc,
-            timestamp: new Date(loc.timestamp),
+      const ranges = await response.json();
+      return ranges
+        ? ranges.ranges.map((rng: APIRange) => ({
+            ...rng,
+            start_time: new Date(rng.start_time),
+            end_time: new Date(rng.end_time),
           }))
         : [];
     },
   });
-  const locations = locationsQuery.data || [];
+  const ranges = rangesQuery.data || [];
   const searches = searchesQuery.data || [];
+  const highlightedRange = ranges
+    .filter((rng) => rng.id === highlightedRangeId)
+    .at(0);
+  const dateTimeFormat = new Intl.DateTimeFormat("en", {
+    hour: "numeric",
+    minute: "numeric",
+  });
   return (
     <>
       <div className="row">
         <div className="col-10 col-md-11">
-        <h2>Pranav Tracker</h2>
+          <h2>Pranav Tracker</h2>
           <div className="row align-items-center mb-2">
             <div className="row align-items-center">
               <div className="col-4 col-lg-2">
@@ -72,25 +81,36 @@ const Main = () => {
                   Search
                 </button>
               </div>
-              <div className="col-4 col-lg-8 text-end p-0">
-                ({locations.length} locations)
+              <div className="col-2 col-lg-4 text-end p-0">
+                {highlightedRange ? (
+                  <>
+                    {formatDelta(
+                      highlightedRange.start_time,
+                      highlightedRange.end_time,
+                    )}{" "}
+                    (
+                    {dateTimeFormat.formatRange(
+                      highlightedRange.start_time,
+                      highlightedRange.end_time,
+                    )}
+                    )
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>
           <div className="row">
-            <MapView
-              locations={locations}
-              highlightedLocationId={highlightedLocationId}
-            />
+            <MapView highlightedRangeId={highlightedRangeId} ranges={ranges} />
           </div>
         </div>
         {viewDate && (
           <Timeline
-            locations={locations}
+            ranges={ranges}
             searches={searches}
             viewDate={viewDate}
-            highlightedLocation={highlightedLocationId}
-            setHighlightedLocation={setHighlightedLocationId}
+            setHighlightedRangeId={setHighlightedRangeId}
           />
         )}
       </div>

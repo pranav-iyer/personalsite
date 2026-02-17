@@ -56,7 +56,8 @@ def ranges_view(request):
         view_date = form.cleaned_data["view_date"]
         if view_date:
             locations = get_locations(view_date)
-            ranges = get_ranges(locations)
+            if len(locations) > 0:
+                ranges = get_ranges(locations)
     return JsonResponse({"ranges": ranges})
 
 

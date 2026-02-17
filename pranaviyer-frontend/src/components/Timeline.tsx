@@ -1,23 +1,21 @@
 import { useEffect, useRef } from "react";
-import { Location, Search } from "../constants";
+import { Range, Search } from "../constants";
 import * as d3 from "d3";
 
 type Props = {
-  locations: Location[];
   searches: Search[];
+  ranges: Range[];
   viewDate: Date;
-  highlightedLocation: number | null;
-  setHighlightedLocation: (v: number | null) => void;
+  setHighlightedRangeId: (v: string | null) => void;
 };
 
 const HEIGHT = 500;
 
 const Timeline = ({
-  locations,
+  ranges,
   searches,
   viewDate,
-  highlightedLocation,
-  setHighlightedLocation,
+  setHighlightedRangeId,
 }: Props) => {
   const gY = useRef<SVGGElement | null>(null);
   const gDot = useRef<SVGGElement | null>(null);
@@ -38,16 +36,7 @@ const Timeline = ({
     if (gY.current) {
       d3.select(gY.current).call(d3.axisLeft(y));
     }
-  }, [y]);
-
-  useEffect(() => {
-    if (gDot.current) {
-      d3.select(gDot.current)
-        .selectAll("circle")
-        .attr("r", 8)
-        .attr("stroke-width", 2);
-    }
-  }, [locations]);
+  }, [viewDate]);
 
   const zoomed = ({ transform }: { transform: d3.ZoomTransform }) => {
     const zy = transform.rescaleY(y).interpolate(d3.interpolateRound);
@@ -58,9 +47,8 @@ const Timeline = ({
     if (gDot.current) {
       d3.select(gDot.current)
         .attr("transform", dotTransform)
-        .selectAll("circle")
-        .attr("r", 6 / dotTransform.k)
-        .attr("stroke-width", 2 / dotTransform.k);
+        .selectAll("path")
+        .attr("stroke-width", 12 / dotTransform.k);
     }
     if (gSearches.current) {
       d3.select(gSearches.current)
@@ -76,7 +64,7 @@ const Timeline = ({
           .zoom()
           .translateExtent([
             [0, -HEIGHT],
-            [0, 2*HEIGHT],
+            [0, 2 * HEIGHT],
           ])
           .on("zoom", zoomed),
       );
@@ -92,18 +80,15 @@ const Timeline = ({
         viewBox={`-40 0 60 ${HEIGHT}`}
       >
         <g ref={gY} />
-        <g ref={gDot} stroke="deepskyblue" fill="lightblue">
-          {locations.map((loc) => (
-            <circle
-              onPointerEnter={() => setHighlightedLocation(loc.id)}
-              onPointerLeave={() =>
-                highlightedLocation === loc.id && setHighlightedLocation(null)
-              }
-              stroke={highlightedLocation === loc.id ? "darkblue" : undefined}
-              key={loc.id}
-              cx={0}
-              cy={y(loc.timestamp)}
+        <g ref={gDot} stroke="firebrick" fill="red">
+          {ranges.map((rng) => (
+            <path
+              d={`M 0,${y(rng.start_time)} L 0,${y(rng.end_time)}`}
+              key={rng.id}
+              strokeWidth="12"
               style={{ cursor: "pointer" }}
+              onPointerEnter={() => setHighlightedRangeId(rng.id)}
+              onPointerLeave={() => setHighlightedRangeId(null)}
             />
           ))}
         </g>
@@ -112,7 +97,7 @@ const Timeline = ({
             <text
               id={`search-icon-${search.id}`}
               key={search.id}
-              x={0}
+              x={5}
               y={y(search.timestamp)}
               fontWeight="bolder"
               onPointerEnter={() => {

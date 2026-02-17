@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
-import {promises as fs} from "node:fs";
+import { promises as fs } from "node:fs";
 
 const CSS_CACHE_KEY =
   "92a1899ea9a7749a2434f7f7115a8bf7adfd1c87b2f259016181e68e9bdcc94b";
@@ -32,7 +32,8 @@ export default defineConfig(async ({ command, mode }) => {
     server: {
       proxy: {
         '/pranav-tracker': 'http://localhost:8000',
-        '/search': 'http://localhost:8000'
+        '/search': 'http://localhost:8000',
+        '/static': 'http://localhost:8000'
       }
     }
   };

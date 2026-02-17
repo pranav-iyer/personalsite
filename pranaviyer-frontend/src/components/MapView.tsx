@@ -1,14 +1,14 @@
 import { Circle, MapContainer, Polyline, TileLayer } from "react-leaflet";
-import { CENTER, Location } from "../constants";
+import { CENTER, Range } from "../constants";
 
 type Props = {
-  locations: Location[];
-  highlightedLocationId: number | null;
+  ranges: Range[];
+  highlightedRangeId: string | null;
 };
 
-const MapView = ({ locations, highlightedLocationId }: Props) => {
-  const highlightedLocation = locations
-    .filter((loc) => loc.id === highlightedLocationId)
+const MapView = ({ ranges, highlightedRangeId }: Props) => {
+  const highlightedRange = ranges
+    .filter((rng) => rng.id === highlightedRangeId)
     .at(0);
   return (
     <MapContainer
@@ -20,20 +20,29 @@ const MapView = ({ locations, highlightedLocationId }: Props) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
       />
+      {ranges
+        .filter((rng) => rng.id != highlightedRangeId)
+        .map((rng) => (
+          <Circle
+            key={`${rng.start_time}-${rng.end_time}`}
+            center={[rng.latitude, rng.longitude]}
+            radius={30}
+            color={"firebrick"}
+          />
+        ))}
       <Polyline
-        positions={locations.map((loc) => [loc.latitude, loc.longitude])}
-        color="deepskyblue"
+        positions={ranges.map((rng) => [rng.latitude, rng.longitude])}
+        color="lightgray"
         dashArray={[2, 4]}
       />
-      {highlightedLocation && (
+      {highlightedRange && (
         <Circle
-          center={[highlightedLocation.latitude, highlightedLocation.longitude]}
-          radius={highlightedLocation.position_accuracy}
+          center={[highlightedRange.latitude, highlightedRange.longitude]}
+          radius={40}
           color="black"
         />
       )}
     </MapContainer>
   );
 };
-export default MapView
-
+export default MapView;

@@ -44,13 +44,14 @@ class Range:
             return self
 
     def to_dict(self) -> Dict[str, Any]:
+        start_time = self.start.timestamp.tz_convert("Europe/Brussels").isoformat()
+        end_time = self.end.timestamp.tz_convert("Europe/Brussels").isoformat()
         return {
             "latitude": self.centroid.y,
             "longitude": self.centroid.x,
-            "start_time": self.start.timestamp.tz_convert(
-                "Europe/Brussels"
-            ).isoformat(),
-            "end_time": self.end.timestamp.tz_convert("Europe/Brussels").isoformat(),
+            "start_time": start_time,
+            "end_time": end_time,
+            "id": f"{start_time}-{end_time}",
         }
 
 

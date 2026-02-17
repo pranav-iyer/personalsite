@@ -40,6 +40,6 @@ app_name = "pranav_tracker"
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("api/ranges", views.ranges_view, name="ranges"),
+    path("api/ranges/", views.ranges_view, name="ranges"),
     path("api/", include(router.urls)),
 ]
