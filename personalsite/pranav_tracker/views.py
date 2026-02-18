@@ -70,7 +70,7 @@ def get_ranges(locations: list, view_date: date):
     rngs = ranges.get_stationary_ranges(gdf)
 
     # extend ranges to start at midnight and end at either 23:59 or current time
-    now = pd.Timestamp.now().tz_convert(ranges.HOME_TIMEZONE)
+    now = pd.Timestamp.utcnow().tz_convert(ranges.HOME_TIMEZONE)
     if now.date() != view_date:
         now = now.replace(hour=23, minute=59, second=59)
 
