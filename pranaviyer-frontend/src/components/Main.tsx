@@ -3,7 +3,7 @@ import MapView from "./MapView";
 import { useRef, useState } from "react";
 import { APIRange, APISearch, Range, Search } from "../constants";
 import Timeline from "./Timeline";
-import { formatDelta } from "../times";
+import { addDays, formatDelta } from "../times";
 
 const Main = () => {
   const [viewDate, setViewDate] = useState<Date | null>(new Date());
@@ -60,7 +60,23 @@ const Main = () => {
           <h2>Pranav Tracker</h2>
           <div className="row align-items-center mb-2">
             <div className="row align-items-center">
-              <div className="col-4 col-lg-2">
+              <div className="col-4 col-lg-2 d-flex gap-1">
+                <button
+                  className="btn btn-sm btn-outline"
+                  onClick={() => {
+                    setViewDate((viewDate) => {
+                      if (!viewDate) return null;
+                      let yesterday = addDays(viewDate, -1);
+                      if (dateInputRef.current)
+                        dateInputRef.current.value = yesterday
+                          .toISOString()
+                          .substring(0, 10);
+                      return yesterday;
+                    });
+                  }}
+                >
+                  &lt;
+                </button>
                 <input
                   type="date"
                   name="view_date"
@@ -69,6 +85,22 @@ const Main = () => {
                   className="form-control form-control-sm form-control-inline"
                   id="id_view_date"
                 />
+                <button
+                  className="btn btn-sm btn-outline"
+                  onClick={() => {
+                    setViewDate((viewDate) => {
+                      if (!viewDate) return null;
+                      let tomorrow = addDays(viewDate, 1);
+                      if (dateInputRef.current)
+                        dateInputRef.current.value = tomorrow
+                          .toISOString()
+                          .substring(0, 10);
+                      return tomorrow;
+                    });
+                  }}
+                >
+                  &gt;
+                </button>
               </div>
               <div className="col-4 col-lg-2">
                 <button

@@ -7,3 +7,9 @@ export function formatDelta(startTime: Date, endTime: Date) {
   let minutes = Math.floor((ms - MS_PER_HOUR * hours) / MS_PER_MINUTE);
   return `${hours} hour${hours != 1 ? "s" : ""}, ${minutes} minute${minutes != 1 ? "s" : ""}`;
 }
+
+export function addDays(d: Date, n: number) {
+  let newDate = structuredClone(d);
+  newDate.setDate(d?.getDate() + n);
+  return newDate;
+}
