@@ -57,7 +57,7 @@ class Range:
         }
 
 
-def get_stationary_ranges(gdf) -> List[Dict[str, str | int | float]]:
+def get_stationary_ranges(gdf) -> List[Dict[str, Any]]:
     THRESH = 2e1
     d = np.vstack([gdf.geometry.x, gdf.geometry.y])
     N = d.shape[1]
