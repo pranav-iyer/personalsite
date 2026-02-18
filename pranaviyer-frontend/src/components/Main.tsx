@@ -60,7 +60,7 @@ const Main = () => {
           <h2>Pranav Tracker</h2>
           <div className="row align-items-center mb-2">
             <div className="row align-items-center">
-              <div className="col-4 col-lg-2 d-flex gap-1">
+              <div className="col-5 col-lg-3 d-flex gap-1">
                 <button
                   className="btn btn-sm btn-outline"
                   onClick={() => {
@@ -102,7 +102,7 @@ const Main = () => {
                   &gt;
                 </button>
               </div>
-              <div className="col-4 col-lg-2">
+              <div className="col-3 col-lg-1">
                 <button
                   className="btn btn-sm btn-primary"
                   onClick={() =>
