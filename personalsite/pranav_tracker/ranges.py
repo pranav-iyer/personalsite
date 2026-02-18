@@ -5,9 +5,11 @@ import geopandas
 import pandas as pd
 import numpy as np
 
+HOME_TIMEZONE = "Europe/Brussels"
+
 
 def print_time(ts: pd.Timestamp) -> str:
-    return ts.tz_convert("Europe/Brussels").strftime("%Y-%m-%d %H:%M:%S")
+    return ts.tz_convert(HOME_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def get_centroid_latlon(gdf) -> shapely.Point:
@@ -44,8 +46,8 @@ class Range:
             return self
 
     def to_dict(self) -> Dict[str, Any]:
-        start_time = self.start.timestamp.tz_convert("Europe/Brussels").isoformat()
-        end_time = self.end.timestamp.tz_convert("Europe/Brussels").isoformat()
+        start_time = self.start.timestamp.tz_convert(HOME_TIMEZONE).isoformat()
+        end_time = self.end.timestamp.tz_convert(HOME_TIMEZONE).isoformat()
         return {
             "latitude": self.centroid.y,
             "longitude": self.centroid.x,
@@ -55,7 +57,7 @@ class Range:
         }
 
 
-def get_stationary_ranges(gdf) -> List[Range]:
+def get_stationary_ranges(gdf) -> List[Dict[str, str | int | float]]:
     THRESH = 2e1
     d = np.vstack([gdf.geometry.x, gdf.geometry.y])
     N = d.shape[1]

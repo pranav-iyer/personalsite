@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, date
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.utils import timezone
 import pandas as pd
 import geopandas
 
@@ -54,11 +55,11 @@ def ranges_view(request):
         if view_date:
             locations = get_locations(view_date)
             if len(locations) > 0:
-                ranges = get_ranges(locations)
+                ranges = get_ranges(locations, view_date)
     return JsonResponse({"ranges": ranges})
 
 
-def get_ranges(locations: list):
+def get_ranges(locations: list, view_date: date):
     df = pd.DataFrame(locations)
     gdf = geopandas.GeoDataFrame(
         df,
@@ -67,4 +68,23 @@ def get_ranges(locations: list):
     )
     utm_crs = gdf.estimate_utm_crs()
     gdf = gdf.to_crs(utm_crs)
-    return ranges.get_stationary_ranges(gdf)
+    rngs = ranges.get_stationary_ranges(gdf)
+
+    # extend ranges to start at midnight and end at either 23:59 or current time
+    now = timezone.now()
+    if now.date() != view_date:
+        now = now.replace(hour=23, minute=59, second=59)
+
+    # replace first start and last end
+    rngs[0]["start_time"] = (
+        datetime.fromisoformat(rngs[0]["start_time"])
+        .replace(hour=0, minute=0, second=0)
+        .isoformat()
+    )
+    rngs[-1]["end_time"] = (
+        datetime.fromisoformat(rngs[-1]["end_time"])
+        .replace(hour=now.hour, minute=now.minute, second=now.second)
+        .isoformat()
+    )
+
+    return rngs
