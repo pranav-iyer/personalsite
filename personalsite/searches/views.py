@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AnonymousUser
 from django.http.response import Http404, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils.http import urlencode
 
 from .models import Search
@@ -35,3 +35,14 @@ def search_shortcut_view(request):
             return redirect("https://ecosia.org/")
     else:
         raise Http404()
+
+
+def browse_searches_view(request):
+    if request.method == "GET":
+        q = request.GET.get("q")
+        if q:
+            searches = Search.objects.filter(text__icontains=q).order_by("-timestamp")
+        else:
+            searches = Search.objects.order_by("-timestamp")[:10]
+
+    return render(request, "searches/browse.html", {"searches": searches})

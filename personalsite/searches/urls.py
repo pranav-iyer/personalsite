@@ -30,6 +30,7 @@ router.register(r"searches", SearchViewSet)
 
 app_name = "searches"
 urlpatterns = [
+    path("browse/", views.browse_searches_view, name="browse"),
     path("log/", views.log_search_view, name="log"),
     path("shortcut/", views.search_shortcut_view, name="shortcut"),
     path("api/", include(router.urls)),

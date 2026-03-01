@@ -1,0 +1,39 @@
+{% extends 'site_base.html' %}
+{% block title %}Searches - Browse{% endblock %}
+
+{% block sitecontent %}
+<div class='row'>
+  <div class="col-0 col-md-1 col-lg-2 col-xl-3"></div>
+  <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+    <h2>Browse Searches</h2>
+    <form action="" method="get">
+      <div class="d-flex gap-3 mb-2">
+        <input class="form-control" name="q" id="qInput" type="text" value="{{request.GET.q}}" autofocus/>
+        <button class="btn btn-primary" type="submit"> Search</button>
+      </div>
+    </form>
+    <ul class="list-group">
+      {% for search in searches %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{search.text}}</span>
+        <span class='text-muted text-nowrap'>{{search.timestamp}}</span>
+      </li>
+      {% empty %}
+      <li class="list-group-item text-center text-muted">
+        No results
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="col-0 col-md-1 col-lg-2 col-xl-3"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.onload = () => {
+    const qInput = document.getElementById('qInput'); 
+    qInput.setSelectionRange(qInput.value.length, qInput.value.length);
+  }
+</script>
+{% endblock %}
