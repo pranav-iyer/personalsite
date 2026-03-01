@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="recipe",
             constraint=models.CheckConstraint(
-                check=models.Q(
+                condition=models.Q(
                     models.Q(("photo__isnull", False), ("url__isnull", True)),
                     models.Q(("photo__isnull", True), ("url__isnull", False)),
                     _connector="OR",
