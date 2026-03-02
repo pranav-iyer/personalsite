@@ -1,13 +1,8 @@
-import re
-
 import markdown
 from bs4 import BeautifulSoup
 from django import forms
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
-from django.utils.html import escape
-from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 from markdown.extensions import Extension
 
@@ -15,9 +10,9 @@ from .models import BlogImage, BlogPost
 
 
 class EscapeHtml(Extension):
-    def extendMarkdown(self, md, md_globals):
-        del md.preprocessors["html_block"]
-        del md.inlinePatterns["html"]
+    def extendMarkdown(self, md):
+        md.preprocessors.deregister("html_block")
+        md.inlinePatterns.deregister("html")
 
 
 class BlogListView(ListView):
