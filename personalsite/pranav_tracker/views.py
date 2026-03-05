@@ -32,7 +32,7 @@ def get_locations(view_date: datetime):
     end_ts = datetime(view_date.year, view_date.month, view_date.day, 23, 59, 59)
     return list(
         Location.objects.filter(timestamp__range=(start_ts, end_ts))
-        .filter(position_accuracy__lte=300)
+        .filter(position_accuracy__lte=30)
         .order_by("timestamp")
         .values(
             "id",
@@ -49,16 +49,17 @@ def get_locations(view_date: datetime):
 def ranges_view(request):
     form = IndexForm(request.GET)
     ranges = []
+    trips = []
     if form.is_valid():
         view_date = form.cleaned_data["view_date"]
         if view_date:
             locations = get_locations(view_date)
             if len(locations) > 0:
-                ranges = get_ranges(locations, view_date)
-    return JsonResponse({"ranges": ranges})
+                ranges, trips = get_ranges_and_trips(locations, view_date)
+    return JsonResponse({"ranges": ranges, "trips": trips})
 
 
-def get_ranges(locations: list, view_date: date):
+def get_ranges_and_trips(locations: list, view_date: date):
     df = pd.DataFrame(locations)
     gdf = geopandas.GeoDataFrame(
         df,
@@ -67,7 +68,7 @@ def get_ranges(locations: list, view_date: date):
     )
     utm_crs = gdf.estimate_utm_crs()
     gdf = gdf.to_crs(utm_crs)
-    rngs = ranges.get_stationary_ranges(gdf)
+    rngs, trips = ranges.get_ranges_and_trips(gdf)
 
     # extend ranges to start at midnight and end at either 23:59 or current time
     now = pd.Timestamp.utcnow().tz_convert(ranges.HOME_TIMEZONE)
@@ -86,4 +87,4 @@ def get_ranges(locations: list, view_date: date):
         .isoformat()
     )
 
-    return rngs
+    return rngs, trips
