@@ -1,24 +1,29 @@
 import { useEffect, useRef } from "react";
-import { Range, Search } from "../constants";
+import { Range, Search, Trip } from "../constants";
 import * as d3 from "d3";
 
 type Props = {
   searches: Search[];
   ranges: Range[];
+  trips: Trip[];
   viewDate: Date;
   setHighlightedRangeId: (v: string | null) => void;
+  setHighlightedTripId: (v: string | null) => void;
 };
 
 const HEIGHT = 500;
 
 const Timeline = ({
   ranges,
+  trips,
   searches,
   viewDate,
   setHighlightedRangeId,
+  setHighlightedTripId
 }: Props) => {
   const gY = useRef<SVGGElement | null>(null);
-  const gDot = useRef<SVGGElement | null>(null);
+  const gRanges = useRef<SVGGElement | null>(null);
+  const gTrips= useRef<SVGGElement | null>(null);
   const gSearches = useRef<SVGGElement | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
@@ -44,8 +49,14 @@ const Timeline = ({
       d3.select(gY.current).call(d3.axisLeft(zy));
     }
     const dotTransform = new d3.ZoomTransform(transform.k, 0, transform.y);
-    if (gDot.current) {
-      d3.select(gDot.current)
+    if (gRanges.current) {
+      d3.select(gRanges.current)
+        .attr("transform", dotTransform)
+        .selectAll("path")
+        .attr("stroke-width", 6 / dotTransform.k);
+    }
+    if (gTrips.current) {
+      d3.select(gTrips.current)
         .attr("transform", dotTransform)
         .selectAll("path")
         .attr("stroke-width", 12 / dotTransform.k);
@@ -80,15 +91,27 @@ const Timeline = ({
         viewBox={`-40 0 60 ${HEIGHT}`}
       >
         <g ref={gY} />
-        <g ref={gDot} stroke="firebrick" fill="red">
+        <g ref={gRanges} stroke="darkgray" fill="lightgray">
           {ranges.map((rng) => (
             <path
               d={`M 0,${y(rng.start_time)} L 0,${y(rng.end_time)}`}
               key={rng.id}
-              strokeWidth="12"
+              strokeWidth="6"
               style={{ cursor: "pointer" }}
               onPointerEnter={() => setHighlightedRangeId(rng.id)}
               onPointerLeave={() => setHighlightedRangeId(null)}
+            />
+          ))}
+        </g>
+        <g ref={gTrips} stroke="firebrick" fill="red">
+          {trips.map((trip) => (
+            <path
+              d={`M 0,${y(trip.start_time)} L 0,${y(trip.end_time)}`}
+              key={trip.id}
+              strokeWidth="12"
+              style={{ cursor: "pointer" }}
+              onPointerEnter={() => setHighlightedTripId(trip.id)}
+              onPointerLeave={() => setHighlightedTripId(null)}
             />
           ))}
         </g>

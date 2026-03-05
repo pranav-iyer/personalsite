@@ -1,14 +1,24 @@
 import { Circle, MapContainer, Polyline, TileLayer } from "react-leaflet";
-import { CENTER, Range } from "../constants";
+import { CENTER, Range, Trip } from "../constants";
 
 type Props = {
   ranges: Range[];
+  trips: Trip[];
   highlightedRangeId: string | null;
+  highlightedTripId: string | null;
 };
 
-const MapView = ({ ranges, highlightedRangeId }: Props) => {
+const MapView = ({
+  ranges,
+  trips,
+  highlightedRangeId,
+  highlightedTripId,
+}: Props) => {
   const highlightedRange = ranges
     .filter((rng) => rng.id === highlightedRangeId)
+    .at(0);
+  const highlightedTrip = trips
+    .filter((trip) => trip.id === highlightedTripId)
     .at(0);
   return (
     <MapContainer
@@ -27,19 +37,24 @@ const MapView = ({ ranges, highlightedRangeId }: Props) => {
             key={`${rng.start_time}-${rng.end_time}`}
             center={[rng.latitude, rng.longitude]}
             radius={30}
-            color={"firebrick"}
+            color={"gray"}
           />
         ))}
-      <Polyline
-        positions={ranges.map((rng) => [rng.latitude, rng.longitude])}
-        color="lightgray"
-        dashArray={[2, 4]}
-      />
       {highlightedRange && (
         <Circle
           center={[highlightedRange.latitude, highlightedRange.longitude]}
           radius={40}
           color="black"
+        />
+      )}
+      {highlightedTrip && (
+        <Polyline
+          positions={highlightedTrip.latlons.map((latlon) => [
+            latlon.latitude,
+            latlon.longitude,
+          ])}
+          color="firebrick"
+          dashArray={[2, 4]}
         />
       )}
     </MapContainer>

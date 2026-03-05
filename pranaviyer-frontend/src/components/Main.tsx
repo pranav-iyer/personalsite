@@ -1,13 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import MapView from "./MapView";
 import { useRef, useState } from "react";
-import { APIRange, APISearch, Range, Search } from "../constants";
+import {
+  APIRange,
+  APISearch,
+  APITrip,
+  RangesAndTrips,
+  Search,
+} from "../constants";
 import Timeline from "./Timeline";
 import { addDays, formatDelta } from "../times";
 
 const Main = () => {
   const [viewDate, setViewDate] = useState<Date | null>(new Date());
   const [highlightedRangeId, setHighlightedRangeId] = useState<string | null>(
+    null,
+  );
+  const [highlightedTripId, setHighlightedTripId] = useState<string | null>(
     null,
   );
   const dateInputRef = useRef<HTMLInputElement | null>(null);
@@ -29,25 +38,36 @@ const Main = () => {
   });
   const rangesQuery = useQuery({
     queryKey: ["ranges", viewDate],
-    queryFn: async (): Promise<Range[]> => {
-      if (!viewDate) return [];
+    queryFn: async (): Promise<RangesAndTrips> => {
+      if (!viewDate) return { ranges: [], trips: [] };
       const response = await fetch(
         `/pranav-tracker/api/ranges/?view_date=${viewDate.toISOString().substring(0, 10)}`,
       );
-      const ranges = await response.json();
-      return ranges
-        ? ranges.ranges.map((rng: APIRange) => ({
-            ...rng,
-            start_time: new Date(rng.start_time),
-            end_time: new Date(rng.end_time),
-          }))
-        : [];
+      const result = await response.json();
+      return result
+        ? {
+            ranges: result.ranges.map((rng: APIRange) => ({
+              ...rng,
+              start_time: new Date(rng.start_time),
+              end_time: new Date(rng.end_time),
+            })),
+            trips: result.trips.map((trip: APITrip) => ({
+              ...trip,
+              start_time: new Date(trip.start_time),
+              end_time: new Date(trip.end_time),
+            })),
+          }
+        : { ranges: [], trips: [] };
     },
   });
-  const ranges = rangesQuery.data || [];
+  const ranges = rangesQuery.data?.ranges || [];
+  const trips = rangesQuery.data?.trips || [];
   const searches = searchesQuery.data || [];
   const highlightedRange = ranges
     .filter((rng) => rng.id === highlightedRangeId)
+    .at(0);
+  const highlightedTrip = trips
+    .filter((trip) => trip.id === highlightedTripId)
     .at(0);
   const dateTimeFormat = new Intl.DateTimeFormat("en", {
     hour: "numeric",
@@ -127,6 +147,21 @@ const Main = () => {
                     )}
                     )
                   </>
+                ) : highlightedTrip ? (
+                  <>
+                    {formatDelta(
+                      highlightedTrip.start_time,
+                      highlightedTrip.end_time,
+                    )}{" "}
+                    (
+                    {dateTimeFormat.formatRange(
+                      highlightedTrip.start_time,
+                      highlightedTrip.end_time,
+                    )}
+                    ) - 
+                    Avg. speed:{" "}
+                    {highlightedTrip.average_velocity.toPrecision(2)} km/h
+                  </>
                 ) : (
                   ""
                 )}
@@ -134,15 +169,22 @@ const Main = () => {
             </div>
           </div>
           <div className="row">
-            <MapView highlightedRangeId={highlightedRangeId} ranges={ranges} />
+            <MapView
+              highlightedRangeId={highlightedRangeId}
+              highlightedTripId={highlightedTripId}
+              ranges={ranges}
+              trips={trips}
+            />
           </div>
         </div>
         {viewDate && (
           <Timeline
             ranges={ranges}
+            trips={trips}
             searches={searches}
             viewDate={viewDate}
             setHighlightedRangeId={setHighlightedRangeId}
+            setHighlightedTripId={setHighlightedTripId}
           />
         )}
       </div>
